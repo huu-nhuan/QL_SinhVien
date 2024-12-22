@@ -26,7 +26,8 @@ namespace WebQuanLySinhVien.Controllers
         {
             if (HttpContext.Session.GetString("TenDangNhap") == null)
             {
-                var u = db.Taikhoans.Where(x => x.TenDangNhap.Equals(tk.TenDangNhap) && x.MatKhau.Equals(tk.MatKhau)).FirstOrDefault();
+                var u = db.Taikhoans.Where(x => x.TenDangNhap.Equals(tk.TenDangNhap) 
+                && x.MatKhau.Equals(tk.MatKhau)).FirstOrDefault();
                 if (u != null)
                 {
                     HttpContext.Session.SetString("TenDangNhap", u.TenDangNhap.ToString());
@@ -44,10 +45,10 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         [HttpPost]
-        public IActionResult Registration(string sdt, Taikhoan tk)
+        public IActionResult Registration(string email, Taikhoan tk)
         {
-            var sv = db.SinhViens.Where(x=>x.Sdt.Equals(sdt)).FirstOrDefault();
-            var gv = db.GiangViens.Where(y => y.Sdt.Equals(sdt)).FirstOrDefault();
+            var sv = db.SinhViens.Where(x=>x.Email.Equals(email)).FirstOrDefault();
+            var gv = db.GiangViens.Where(y => y.Email.Equals(email)).FirstOrDefault();
             if (sv == null && gv == null) return View();
             else if (gv != null)
             {
@@ -77,6 +78,38 @@ namespace WebQuanLySinhVien.Controllers
             HttpContext.Session.Remove("TenDangNhap");
             return RedirectToAction("Login", "Access");
         }
+
+        [HttpGet]
+        public IActionResult EmailConfirm()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult EmailConfirm(string email, string newpass)
+        {
+            var sv = db.SinhViens.Where(x => x.Email.Equals(email)).FirstOrDefault();
+            var gv = db.GiangViens.Where(y => y.Email.Equals(email)).FirstOrDefault();
+            if (sv == null && gv == null)
+                return BadRequest("Email không tồn tại trong hệ thống");
+            else if (gv != null && gv.IdTk != null)
+            {
+                var tk = db.Taikhoans.Where(x=>x.IdTk.Equals(gv.IdTk)).FirstOrDefault();
+                tk.MatKhau = newpass;
+                db.SaveChanges();
+            }
+            else if (sv != null && sv.IdTk != null)
+            {
+                var tk = db.Taikhoans.Where(x => x.IdTk.Equals(sv.IdTk)).FirstOrDefault();
+                tk.MatKhau = newpass;
+                db.SaveChanges();
+            }
+            else return BadRequest("Bạn chưa tạo tài khoản. Hãy tạo một tài khoản mới");
+
+            return RedirectToAction("Login", "Access");
+        }
+
+
 
         public string TaoID()
         {

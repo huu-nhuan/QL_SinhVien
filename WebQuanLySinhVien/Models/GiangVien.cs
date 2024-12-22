@@ -19,6 +19,8 @@ public partial class GiangVien
 
     public string? IdTk { get; set; }
 
+    public string Email { get; set; } = null!;
+
     public virtual Taikhoan? IdTkNavigation { get; set; }
 
     public virtual ICollection<Lop> Lops { get; set; } = new List<Lop>();

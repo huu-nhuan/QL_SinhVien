@@ -20,7 +20,7 @@
             var password = document.getElementById("MatKhau").value;
             var confirmPassword = document.getElementsByName("confirmPassword")[0].value;
             if (password !== confirmPassword) {
-                alert("Passwords do not match!");
+                alert("Mật khẩu không giống nhau!");
                 return false;
             }
             return true;
@@ -30,21 +30,21 @@
 <body>
     <div class="container">
         <div class="registration form">
-            <header>Signup</header>
+            <header>Đăng ký</header>
             @using (Html.BeginForm("Registration", "Access", FormMethod.Post@* , new { onsubmit = "return validatePasswords()" }  *@))
             {
-                <input type="text" placeholder="Enter your phone number" name="sdt" required>
-                @Html.TextBoxFor(x => x.TenDangNhap, new { placeholder = "Username", required = "required", autofocus = "autofocus" })
+                <input type="text" placeholder="Nhập Email" name="email" required>
+                @Html.TextBoxFor(x => x.TenDangNhap, new { placeholder = "Tên đăng nhập", required = "required", autofocus = "autofocus" })
                 @* <input type="password" placeholder="Create a password" name="password" required> *@
                 @* @Html.TextBoxFor(x => x.MatKhau, new { type="pasword", placeholder = "Password", required = "required", @id = "MatKhau" }) *@
-                @Html.TextBoxFor(x => x.MatKhau, new { type = "password", placeholder = "Password" })
-                <input type="password" placeholder="Confirm your password" name="confirmPassword" required>
-                <input type="submit" class="button" value="Signup">
+                @Html.TextBoxFor(x => x.MatKhau, new { type = "password", placeholder = "Mật khẩu" })
+                <input type="password" placeholder="Xác nhận lại mật khẩu" name="confirmPassword" required>
+                <input type="submit" class="button" value="Xác nhận">
             }
             <div class="signup">
                 <span class="signup">
-                    Already have an account?
-                    <a href="/Access/Login">Login</a>
+                    Đã có tài khoản?
+                    <a href="/Access/Login">Đăng nhập</a>
                 </span>
             </div>
         </div>

@@ -15,11 +15,13 @@ public partial class SinhVien
 
     public DateOnly? NgaySinh { get; set; }
 
-    public string? Sdt { get; set; }
+    public string Sdt { get; set; } = null!;
 
     public string? DiaChi { get; set; }
 
     public string? IdTk { get; set; }
+
+    public string Email { get; set; } = null!;
 
     public virtual ICollection<Diemhp> Diemhps { get; set; } = new List<Diemhp>();
 

@@ -2,7 +2,6 @@
 @{
     Layout = null;
 }
-@model Taikhoan
 
 <!DOCTYPE html>
 <!---Coding By CoderGirl | www.codinglabweb.com--->
@@ -17,30 +16,33 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebQuanLySinhVien.styles.css" asp-append-version="true" />
+    <script>
+        function validatePasswords() {
+            var newPassword = document.getElementsByName("newpass")[0].value;
+            var confirmPassword = document.getElementsByName("newpass1")[0].value;
+            if (newPassword !== confirmPassword) {
+                alert("Mật khẩu không giống nhau!");
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <input type="checkbox" id="check">
         <div class="login form">
-            <header>Đăng nhập</header>
+            <header>Tạo lại mật khẩu</header>
             @* <form action="#"> *@
-            @using (Html.BeginForm("Login", "Access", FormMethod.Post))
+            @using (Html.BeginForm("EmailConfirm", "Access", FormMethod.Post, new { onsubmit = "return validatePasswords()" }))
             {
-                @* <input type="text" placeholder="Enter your email"> *@
-                @Html.TextBoxFor(x => x.TenDangNhap, new {  placeholder = "Tên đăng nhập", required = "required", autofocus = "autofocus" })
-                @*<input type="password" placeholder="Enter your password"> *@
-                @Html.TextBoxFor(x => x.MatKhau, new { type = "password", placeholder = "Mật khẩu" })
-                <a href="/Access/EmailConfirm">Quên mật khẩu?</a>
+                <input type="text" placeholder="Nhập Email của bạn" name="email" required>
+                <input type="password" placeholder="Nhập mật khẩu mới" name="newpass" required>
+                <input type="password" placeholder="Nhập lại mật khẩu" name="newpass1" required>
                 @* <button type="submit" >Login</button> *@
                 <input type="submit" typeof="submit" class="button" value="Xác nhận">
             }
             @* </form> *@
-            <div class="signup">
-                <span class="signup">
-                    Chưa có tài khoản?
-                    <a href="/Access/Registration">Tạo tài khoản</a>
-                </span>
-            </div>
         </div>
     </div>
 </body>
