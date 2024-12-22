@@ -1,0 +1,47 @@
+﻿
+@{
+    Layout = null;
+}
+@model Taikhoan
+
+<!DOCTYPE html>
+<!---Coding By CoderGirl | www.codinglabweb.com--->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login & Registration Form | CoderGirl</title>
+    <!---Custom CSS File--->
+    <link rel="stylesheet" href="../../template/style.css">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebQuanLySinhVien.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container">
+        <input type="checkbox" id="check">
+        <div class="login form">
+            <header>Login</header>
+            @* <form action="#"> *@
+            @using (Html.BeginForm("Login", "Access", FormMethod.Post))
+            {
+                @* <input type="text" placeholder="Enter your email"> *@
+                @Html.TextBoxFor(x => x.TenDangNhap, new {  placeholder = "Username", required = "required", autofocus = "autofocus" })
+                @*<input type="password" placeholder="Enter your password"> *@
+                @Html.TextBoxFor(x => x.MatKhau, new { type = "password", placeholder = "Password" })
+                <a href="#">Forgot password?</a>
+                @* <button type="submit" >Login</button> *@
+                <input type="submit" typeof="submit" class="button" value="Login">
+            }
+            @* </form> *@
+            <div class="signup">
+                <span class="signup">
+                    Don't have an account?
+                    <a href="/Access/Registration">Create new</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

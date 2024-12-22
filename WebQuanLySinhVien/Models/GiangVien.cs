@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace WebQuanLySinhVien.Models;
+
+public partial class GiangVien
+{
+    public string MaGv { get; set; } = null!;
+
+    public string? HoTen { get; set; }
+
+    public string GioiTinh { get; set; } = null!;
+
+    public DateOnly? NgaySinh { get; set; }
+
+    public string? Sdt { get; set; }
+
+    public string? DiaChi { get; set; }
+
+    public string? IdTk { get; set; }
+
+    public virtual Taikhoan? IdTkNavigation { get; set; }
+
+    public virtual ICollection<Lop> Lops { get; set; } = new List<Lop>();
+}
