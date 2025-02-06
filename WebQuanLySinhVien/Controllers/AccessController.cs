@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using System.Text;
+using WebQuanLySinhVien.email;
 using WebQuanLySinhVien.Models;
 
 namespace WebQuanLySinhVien.Controllers
@@ -7,6 +10,12 @@ namespace WebQuanLySinhVien.Controllers
     public class AccessController : Controller
     {
         QuanLySinhVienContext db = new QuanLySinhVienContext();
+
+        private readonly IEmailSender _emailSender;
+        public AccessController(IEmailSender emailSender)
+        {
+            this._emailSender = emailSender;
+        }
         //Đăng nhập
         [HttpGet]
         public IActionResult Login()
@@ -47,7 +56,7 @@ namespace WebQuanLySinhVien.Controllers
         [HttpPost]
         public IActionResult Registration(string email, Taikhoan tk)
         {
-            var sv = db.SinhViens.Where(x=>x.Email.Equals(email)).FirstOrDefault();
+            var sv = db.SinhViens.Where(x => x.Email.Equals(email)).FirstOrDefault();
             var gv = db.GiangViens.Where(y => y.Email.Equals(email)).FirstOrDefault();
             if (sv == null && gv == null) return View();
             else if (gv != null)
@@ -64,10 +73,15 @@ namespace WebQuanLySinhVien.Controllers
                 tk.IdTk = TaoID();
                 tk.VaiTro = 3;
                 db.Taikhoans.Add(tk);
-                sv.IdTk= tk.IdTk;
+                sv.IdTk = tk.IdTk;
 
                 db.SaveChanges();
             }
+            //var receiver = "soroje2090@fanicle.com";
+            //var subject = "test";
+            //var message = "test";
+
+            //await _emailSender.SendEmailAsync(receiver, subject, message);
             return RedirectToAction("Login", "Access");
         }
 
@@ -82,12 +96,14 @@ namespace WebQuanLySinhVien.Controllers
         [HttpGet]
         public IActionResult EmailConfirm()
         {
+            ViewData["Email"] = TempData["Email"];
             return View();
         }
 
         [HttpPost]
-        public IActionResult EmailConfirm(string email, string newpass)
+        public IActionResult EmailConfirm( string newpass)
         {
+            string email = HttpContext.Session.GetString("email");
             var sv = db.SinhViens.Where(x => x.Email.Equals(email)).FirstOrDefault();
             var gv = db.GiangViens.Where(y => y.Email.Equals(email)).FirstOrDefault();
             if (sv == null && gv == null)
@@ -109,7 +125,20 @@ namespace WebQuanLySinhVien.Controllers
             return RedirectToAction("Login", "Access");
         }
 
+        [HttpPost]
+        public IActionResult GuiMaXacNhan( string email)
+        {
+            TaoMaXacNhan();
+            var receiver = email;
+            var subject = "Mã xác nhận";
+            var message = "Mã xác nhận của bạn là: " + HttpContext.Session.GetString("MaXacNhan");
 
+            TempData["Email"] = email;
+            HttpContext.Session.SetString("email", email);
+
+            _emailSender.SendEmailAsync(receiver, subject, message);
+            return RedirectToAction("EmailConfirm", "Access");
+        }
 
         public string TaoID()
         {
@@ -136,6 +165,21 @@ namespace WebQuanLySinhVien.Controllers
             }
 
             return result.ToString();
+        }
+
+        public void TaoMaXacNhan()
+        {
+            int length = 4;
+            const string digits = "0123456789";
+            StringBuilder result = new StringBuilder(length);
+            Random random = new Random();
+
+            for (int i = 0; i < length; i++)
+            {
+                int index = random.Next(digits.Length);
+                result.Append(digits[index]);
+            }
+            HttpContext.Session.SetString("MaXacNhan", result.ToString());
         }
     }
 }

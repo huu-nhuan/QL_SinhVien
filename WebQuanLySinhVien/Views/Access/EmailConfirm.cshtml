@@ -26,6 +26,7 @@
             }
             return true;
         }
+
     </script>
 </head>
 <body>
@@ -34,15 +35,23 @@
         <div class="login form">
             <header>Tạo lại mật khẩu</header>
             @* <form action="#"> *@
-            @using (Html.BeginForm("EmailConfirm", "Access", FormMethod.Post, new { onsubmit = "return validatePasswords()" }))
+            @using (Html.BeginForm("GuiMaXacNhan", "Access", FormMethod.Post))
             {
-                <input type="text" placeholder="Nhập Email của bạn" name="email" required>
+                <input type="text" placeholder="Nhập Email của bạn" name="email" id="email" value="@ViewData["Email"]" required>
+                @* <input type="button" style="display:inline-block;" class="button" value="Gửi mã xác nhận"> *@
+                <input type="submit" typeof="submit" class="button" value="Gửi mã xác nhận">
+                <br>
+            } 
+            @using (Html.BeginForm("EmailConfirm", "Access", FormMethod.Post, new { onsubmit = "return validatePasswords()" }))
+            {               
+                <input type="text" placeholder="Nhập mã xác nhận" name="verificationCode" required style="margin-top:10px;">
                 <input type="password" placeholder="Nhập mật khẩu mới" name="newpass" required>
                 <input type="password" placeholder="Nhập lại mật khẩu" name="newpass1" required>
                 @* <button type="submit" >Login</button> *@
                 <input type="submit" typeof="submit" class="button" value="Xác nhận">
             }
-            @* </form> *@
+
+            @* </form> *@   
         </div>
     </div>
 </body>
