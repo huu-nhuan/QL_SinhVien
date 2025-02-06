@@ -101,23 +101,29 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         [HttpPost]
-        public IActionResult EmailConfirm( string newpass)
+        public IActionResult EmailConfirm( string newpass, string verificationCode)
         {
             string email = HttpContext.Session.GetString("email");
             var sv = db.SinhViens.Where(x => x.Email.Equals(email)).FirstOrDefault();
             var gv = db.GiangViens.Where(y => y.Email.Equals(email)).FirstOrDefault();
             if (sv == null && gv == null)
                 return BadRequest("Email không tồn tại trong hệ thống");
+            if (verificationCode != HttpContext.Session.GetString("MaXacNhan"))
+                return BadRequest("Mã xác nhận không chính xác");
             else if (gv != null && gv.IdTk != null)
             {
-                var tk = db.Taikhoans.Where(x=>x.IdTk.Equals(gv.IdTk)).FirstOrDefault();
+                var tk = db.Taikhoans.Where(x => x.IdTk.Equals(gv.IdTk)).FirstOrDefault();
                 tk.MatKhau = newpass;
+                HttpContext.Session.Remove("MaXacNhan");
+                HttpContext.Session.Remove("email");
                 db.SaveChanges();
             }
             else if (sv != null && sv.IdTk != null)
             {
                 var tk = db.Taikhoans.Where(x => x.IdTk.Equals(sv.IdTk)).FirstOrDefault();
                 tk.MatKhau = newpass;
+                HttpContext.Session.Remove("MaXacNhan");
+                HttpContext.Session.Remove("email");
                 db.SaveChanges();
             }
             else return BadRequest("Bạn chưa tạo tài khoản. Hãy tạo một tài khoản mới");
@@ -128,6 +134,10 @@ namespace WebQuanLySinhVien.Controllers
         [HttpPost]
         public IActionResult GuiMaXacNhan( string email)
         {
+            var sv = db.SinhViens.Where(x => x.Email.Equals(email)).FirstOrDefault();
+            var gv = db.GiangViens.Where(y => y.Email.Equals(email)).FirstOrDefault();
+            if (sv == null && gv == null)
+                return BadRequest("Email không tồn tại trong hệ thống");
             TaoMaXacNhan();
             var receiver = email;
             var subject = "Mã xác nhận";
