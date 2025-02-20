@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using WebQuanLySinhVien.email;
+using WebQuanLySinhVien.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +9,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
-
+builder.Services.AddDbContext<QuanLySinhVienContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("QuanLySinhVienContext")));
 
 var app = builder.Build();
 

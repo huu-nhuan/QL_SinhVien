@@ -1,0 +1,41 @@
+﻿@model IEnumerable<WebQuanLySinhVien.Models.Nganh>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TenNganh)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MaKhoaNavigation)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenNganh)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaKhoaNavigation.MaKhoa)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MaNganh">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MaNganh">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MaNganh">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

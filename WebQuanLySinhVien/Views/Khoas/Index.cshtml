@@ -1,0 +1,35 @@
+﻿@model IEnumerable<WebQuanLySinhVien.Models.Khoa>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Danh sách</h1>
+
+<p>
+    <a asp-action="Create">Tạo mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TenKhoa)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenKhoa)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MaKhoa">Sửa</a> |
+                <a asp-action="Details" asp-route-id="@item.MaKhoa">Chi tiết</a> |
+                <a asp-action="Delete" asp-route-id="@item.MaKhoa">Xóa</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

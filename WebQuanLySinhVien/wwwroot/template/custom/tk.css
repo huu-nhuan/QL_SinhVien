@@ -1,0 +1,16 @@
+.password-container {
+    position: relative;
+    display: inline-block;
+}
+
+.password-field {
+    display: inline-block;
+}
+
+.password-input {
+    display: none;
+}
+
+.toggle-password {
+    margin-left: 10px;
+}

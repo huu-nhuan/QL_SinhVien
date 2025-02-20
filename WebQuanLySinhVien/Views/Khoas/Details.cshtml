@@ -1,0 +1,24 @@
+﻿@model WebQuanLySinhVien.Models.Khoa
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Thông tin chi tiết</h1>
+
+<div>
+    <h4>Khoa</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TenKhoa)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TenKhoa)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.MaKhoa">Chỉnh sửa</a> |
+    <a asp-action="Index">Trở về danh sách</a>
+</div>
