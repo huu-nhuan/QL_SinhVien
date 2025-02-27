@@ -1,0 +1,76 @@
+﻿@model WebQuanLySinhVien.Models.ViewModels.AdminTableList
+
+@{
+    ViewData["Title"] = "Danh sách bảng";
+}
+<h4>Danh sách Khoa</h4>
+<a asp-area="" asp-controller="Khoas" asp-action="Index">Chỉnh sửa bảng</a>
+<div class="table-responsive table-full-width">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Mã khoa</th>
+                <th>Tên khoa</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DanhSachKhoa)
+            {
+                <tr>
+                    <td>@item.MaKhoa</td>
+                    <td>@item.TenKhoa</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<h4>Danh sách Ngành</h4>
+<a asp-area="" asp-controller="Nganhs" asp-action="Index">Chỉnh sửa bảng</a>
+<div class="table-responsive table-full-width">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Mã ngành</th>
+                <th>Tên ngành</th>
+                <th>Mã khoa</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DanhSachNganh)
+            {
+                <tr>
+                    <td>@item.MaNganh</td>
+                    <td>@item.TenNganh</td>
+                    <td>@item.MaKhoa</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<h4>Danh sách Học phần</h4>
+<a asp-area="" asp-controller="Nganhs" asp-action="Index">Chỉnh sửa bảng</a>
+<div class="table-responsive table-full-width">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Mã học phần</th>
+                <th>Tên học phần</th>
+                <th>Số tín chỉ</th>
+                <th>Học kỳ</th>
+                <th>Mã ngành</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DanhSachHocPhan)
+            {
+                <tr>
+                    <td>@item.MaHp</td>
+                    <td>@item.TenHp</td>
+                    <td>@item.SoTc</td>
+                    <td>@item.HocKy</td>
+                    <td>@item.MaNganh</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
