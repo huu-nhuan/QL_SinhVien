@@ -1,76 +1,351 @@
 ﻿@model WebQuanLySinhVien.Models.ViewModels.AdminTableList
-
+@using X.PagedList.Mvc.Core;
 @{
     ViewData["Title"] = "Danh sách bảng";
 }
-<h4>Danh sách Khoa</h4>
-<a asp-area="" asp-controller="Khoas" asp-action="Index">Chỉnh sửa bảng</a>
-<div class="table-responsive table-full-width">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Mã khoa</th>
-                <th>Tên khoa</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.DanhSachKhoa)
-            {
+<div class="card">
+    <div class="header">
+        <h4>Danh sách Tài khoản</h4>
+        <a asp-area="" asp-controller="TaiKhoans" asp-action="Index">Chỉnh sửa bảng</a>
+    </div>
+    <div class="content table-responsive table-full-width">
+        <table class="table table-hover table-striped">
+            <thead>
                 <tr>
-                    <td>@item.MaKhoa</td>
-                    <td>@item.TenKhoa</td>
+                    <th>ID tài khoản</th>
+                    <th>Tên đang nhập</th>
+                    <th>Mật khẩu</th>
+                    <th>Vai trò</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DanhSachTaiKhoan)
+                {
+                    <tr>
+                        <td>@item.IdTk</td>
+                        <td>@item.TenDangNhap</td>
+                        <td>@item.MatKhau</td>
+                        <td>@item.VaiTro</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="header">
+            @Html.PagedListPager(Model.DanhSachTaiKhoan, page => Url.Action("Index", new
+                {
+                    pageTK = page,
+                    pageKhoa = Model.DanhSachKhoa.PageNumber,
+                    pageNganh = Model.DanhSachNganh.PageNumber,
+                    pageHP = Model.DanhSachHocPhan.PageNumber,
+                    pageGV = Model.DanhSachGiangVien.PageNumber,
+                    pageLop = Model.DanhSachLop.PageNumber,
+                    pageSV = Model.DanhSachSinhVien.PageNumber,
+                    pageDHP = Model.DanhSachDiemHocPhan.PageNumber
+                }))
+        </div>
+    </div>
 </div>
-<h4>Danh sách Ngành</h4>
-<a asp-area="" asp-controller="Nganhs" asp-action="Index">Chỉnh sửa bảng</a>
-<div class="table-responsive table-full-width">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Mã ngành</th>
-                <th>Tên ngành</th>
-                <th>Mã khoa</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.DanhSachNganh)
-            {
+<div class="card">
+    <div class="header">
+        <h4>Danh sách Khoa</h4>
+        <a asp-area="" asp-controller="Khoas" asp-action="Index">Chỉnh sửa bảng</a>
+    </div>
+    <div class="content table-responsive table-full-width">
+        <table class="table table-hover table-striped">
+            <thead>
                 <tr>
-                    <td>@item.MaNganh</td>
-                    <td>@item.TenNganh</td>
-                    <td>@item.MaKhoa</td>
+                    <th>Mã khoa</th>
+                    <th>Tên khoa</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DanhSachKhoa)
+                {
+                    <tr>
+                        <td>@item.MaKhoa</td>
+                        <td>@item.TenKhoa</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="header">
+            @Html.PagedListPager(Model.DanhSachKhoa, page => Url.Action("Index", new
+                {
+                    pageTK = Model.DanhSachTaiKhoan.PageNumber,
+                    pageKhoa = page,
+                    pageNganh = Model.DanhSachNganh.PageNumber,
+                    pageHP = Model.DanhSachHocPhan.PageNumber,
+                    pageGV = Model.DanhSachGiangVien.PageNumber,
+                    pageLop = Model.DanhSachLop.PageNumber,
+                    pageSV = Model.DanhSachSinhVien.PageNumber,
+                    pageDHP = Model.DanhSachDiemHocPhan.PageNumber
+                }))
+        </div>
+    </div>
 </div>
-<h4>Danh sách Học phần</h4>
-<a asp-area="" asp-controller="Nganhs" asp-action="Index">Chỉnh sửa bảng</a>
-<div class="table-responsive table-full-width">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Mã học phần</th>
-                <th>Tên học phần</th>
-                <th>Số tín chỉ</th>
-                <th>Học kỳ</th>
-                <th>Mã ngành</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.DanhSachHocPhan)
-            {
+<div class="card">
+    <div class="header">
+        <h4>Danh sách Ngành</h4>
+        <a asp-area="" asp-controller="Nganhs" asp-action="Index">Chỉnh sửa bảng</a>
+    </div>
+    <div class="content table-responsive table-full-width">
+        <table class="table table-hover table-striped">
+            <thead>
                 <tr>
-                    <td>@item.MaHp</td>
-                    <td>@item.TenHp</td>
-                    <td>@item.SoTc</td>
-                    <td>@item.HocKy</td>
-                    <td>@item.MaNganh</td>
+                    <th>Mã ngành</th>
+                    <th>Tên ngành</th>
+                    <th>Mã khoa</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DanhSachNganh)
+                {
+                    <tr>
+                        <td>@item.MaNganh</td>
+                        <td>@item.TenNganh</td>
+                        <td>@item.MaKhoa</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="header">
+            @Html.PagedListPager(Model.DanhSachNganh, page => Url.Action("Index", new
+                {
+                    pageTK = Model.DanhSachTaiKhoan.PageNumber,
+                    pageKhoa = Model.DanhSachKhoa.PageNumber,
+                    pageNganh = page,
+                    pageHP = Model.DanhSachHocPhan.PageNumber,
+                    pageGV = Model.DanhSachGiangVien.PageNumber,
+                    pageLop = Model.DanhSachLop.PageNumber,
+                    pageSV = Model.DanhSachSinhVien.PageNumber,
+                    pageDHP = Model.DanhSachDiemHocPhan.PageNumber
+                }))
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="header">
+        <h4>Danh sách Học phần</h4>
+        <a asp-area="" asp-controller="HocPhans" asp-action="Index">Chỉnh sửa bảng</a>
+    </div>
+    <div class="content table-responsive table-full-width">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Mã học phần</th>
+                    <th>Tên học phần</th>
+                    <th>Số tín chỉ</th>
+                    <th>Học kỳ</th>
+                    <th>Mã ngành</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DanhSachHocPhan)
+                {
+                    <tr>
+                        <td>@item.MaHp</td>
+                        <td>@item.TenHp</td>
+                        <td>@item.SoTc</td>
+                        <td>@item.HocKy</td>
+                        <td>@item.MaNganh</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="header">
+            @Html.PagedListPager(Model.DanhSachHocPhan, page => Url.Action("Index", new
+                {
+                    pageTK = Model.DanhSachTaiKhoan.PageNumber,
+                    pageKhoa = Model.DanhSachKhoa.PageNumber,
+                    pageNganh = Model.DanhSachNganh.PageNumber,
+                    pageHP = page,
+                    pageGV = Model.DanhSachGiangVien.PageNumber,
+                    pageLop = Model.DanhSachLop.PageNumber,
+                    pageSV = Model.DanhSachSinhVien.PageNumber,
+                    pageDHP = Model.DanhSachDiemHocPhan.PageNumber
+                }))
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="header">
+        <h4>Danh sách Giảng viên</h4>
+        <a asp-area="" asp-controller="GiangViens" asp-action="Index">Chỉnh sửa bảng</a>
+    </div>
+    <div class="content table-responsive table-full-width">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Mã giảng viên</th>
+                    <th>Họ tên</th>
+                    <th>Giới tính</th>
+                    <th>Ngày sinh</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ</th>
+                    <th>ID tài khoản</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DanhSachGiangVien)
+                {
+                    <tr>
+                        <td>@item.MaGv</td>
+                        <td>@item.HoTen</td>
+                        <td>@item.GioiTinh</td>
+                        <td>@item.NgaySinh</td>
+                        <td>@item.Sdt</td>
+                        <td>@item.DiaChi</td>
+                        <td>@item.IdTk</td>
+                        <td>@item.Email</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="header">
+            @Html.PagedListPager(Model.DanhSachGiangVien, page => Url.Action("Index", new
+                {
+                    pageTK = Model.DanhSachTaiKhoan.PageNumber,
+                    pageKhoa = Model.DanhSachKhoa.PageNumber,
+                    pageNganh = Model.DanhSachNganh.PageNumber,
+                    pageHP = Model.DanhSachHocPhan.PageNumber,
+                    pageGV = page,
+                    pageLop = Model.DanhSachLop.PageNumber,
+                    pageSV = Model.DanhSachSinhVien.PageNumber,
+                    pageDHP = Model.DanhSachDiemHocPhan.PageNumber
+                }))
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="header">
+        <h4>Danh sách Lớp</h4>
+        <a asp-area="" asp-controller="Lops" asp-action="Index">Chỉnh sửa bảng</a>
+    </div>
+    <div class="content table-responsive table-full-width">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Mã lớp</th>
+                    <th>Tên lớp</th>
+                    <th>Giảng viên</th>
+                    <th>Năm nhập học</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DanhSachLop)
+                {
+                    <tr>
+                        <td>@item.MaLop</td>
+                        <td>@item.TenLop</td>
+                        <td>@Model.DanhSachGiangVien.Where(gv => gv.MaGv.Equals(item.MaGv)).FirstOrDefault()?.HoTen</td>
+                        <td>@item.NamNhapHoc</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="header">
+            @Html.PagedListPager(Model.DanhSachLop, page => Url.Action("Index", new
+                {
+                    pageTK = Model.DanhSachTaiKhoan.PageNumber,
+                    pageKhoa = Model.DanhSachKhoa.PageNumber,
+                    pageNganh = Model.DanhSachNganh.PageNumber,
+                    pageHP = Model.DanhSachHocPhan.PageNumber,
+                    pageGV = Model.DanhSachGiangVien.PageNumber,
+                    pageLop = page,
+                    pageSV = Model.DanhSachSinhVien.PageNumber,
+                    pageDHP = Model.DanhSachDiemHocPhan.PageNumber
+                }))
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="header">
+        <h4>Danh sách Sinh viên</h4>
+        <a asp-area="" asp-controller="SinhViens" asp-action="Index">Chỉnh sửa bảng</a>
+    </div>
+    <div class="content table-responsive table-full-width">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Mã sinh viên</th>
+                    <th>Họ tên</th>
+                    <th>Giới tính</th>
+                    <th>Ngày sinh</th>
+                    <th>Số điện thoại</th>
+                    <th>Địa chỉ</th>
+                    <th>Lớp</th>
+                    <th>ID tài khoản</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DanhSachSinhVien)
+                {
+                    <tr>
+                        <td>@item.MaSv</td>
+                        <td>@item.HoTen</td>
+                        <td>@item.GioiTinh</td>
+                        <td>@item.NgaySinh</td>
+                        <td>@item.Sdt</td>
+                        <td>@item.DiaChi</td>
+                        <td>@Model.DanhSachLop.Where(l => l.MaLop.Equals(item.MaLop)).FirstOrDefault()?.TenLop</td>
+                        <td>@item.IdTk</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="header">
+            @Html.PagedListPager(Model.DanhSachSinhVien, page => Url.Action("Index", new
+                {
+                    pageTK = Model.DanhSachTaiKhoan.PageNumber,
+                    pageKhoa = Model.DanhSachKhoa.PageNumber,
+                    pageNganh = Model.DanhSachNganh.PageNumber,
+                    pageHP = Model.DanhSachHocPhan.PageNumber,
+                    pageGV = Model.DanhSachGiangVien.PageNumber,
+                    pageLop = Model.DanhSachLop.PageNumber,
+                    pageSV = page,
+                    pageDHP = Model.DanhSachDiemHocPhan.PageNumber
+                }))
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="header">
+        <h4>Danh sách Điểm</h4>
+        <a asp-area="" asp-controller="Diemhps" asp-action="Index">Chỉnh sửa bảng</a>
+    </div>
+    <div class="content table-responsive table-full-width">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Sinh viên</th>
+                    <th>Môn học</th>
+                    <th>Điểm</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DanhSachDiemHocPhan)
+                {
+                    <tr>
+                        <td>@Model.DanhSachSinhVien.Where(sv => sv.MaSv.Equals(item.MaSv)).FirstOrDefault()?.HoTen</td>
+                        <td>@Model.DanhSachHocPhan.Where(hp => hp.MaHp.Equals(item.MaHp)).FirstOrDefault()?.TenHp</td>
+                        <td>@item.DiemHp</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="header">
+            @Html.PagedListPager(Model.DanhSachSinhVien, page => Url.Action("Index", new
+                {
+                    pageTK = Model.DanhSachTaiKhoan.PageNumber,
+                    pageKhoa = Model.DanhSachKhoa.PageNumber,
+                    pageNganh = Model.DanhSachNganh.PageNumber,
+                    pageHP = Model.DanhSachHocPhan.PageNumber,
+                    pageGV = Model.DanhSachGiangVien.PageNumber,
+                    pageLop = Model.DanhSachLop.PageNumber,
+                    pageSV = Model.DanhSachSinhVien.PageNumber,
+                    pageDHP = page
+                }))
+        </div>
+    </div>
 </div>
