@@ -1,0 +1,98 @@
+﻿@model WebQuanLySinhVien.Models.ViewModels.ThongKe.SL_SinhVienNganh
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Thống kê";
+}
+<h4><small>Public Preferences</small></h4>
+
+<div class="row margin-top">
+
+	<div class="col-md-10 col-md-offset-1">
+
+		<div id="chartPreferences" class="ct-chart "></div>
+
+	</div>
+
+</div>
+
+<div class="row">
+
+	<div class="col-md-10 col-md-offset-1">
+
+		<h6>Legend</h6>
+
+		<i class="fa fa-circle text-info"></i> Apple
+
+		<i class="fa fa-circle text-success"></i> Samsung
+
+		<i class="fa fa-circle text-warning"></i> BlackBerry
+
+		<i class="fa fa-circle text-danger"></i> Windows Phone
+
+	</div>
+
+</div>
+
+
+
+<!-- javascript -->
+<script>
+
+	// Lấy dữ liệu từ model và chuyển thành JSON
+	var _model = @Html.Raw(JsonSerializer.Serialize(Model));
+	
+	var dataList = _model.DanhSachSoLuongSinhVien;
+	console.log(dataList.DanhSachSoLuongSinhVien);
+
+	if (!Array.isArray(dataList)) {
+		dataList = Object.values(dataList); // Chuyển đổi object thành mảng
+	}
+
+	var total = dataList.reduce(function(sum, item) {
+		return sum + item.SoLuong;
+	}, 0);
+
+	// Chuẩn hóa dữ liệu để tổng bằng 100
+	var normalizedData = dataList.map(function(item) {
+		return {
+			name: item.MaHP,
+			value: (item.SoLuong / total) * 100
+		};
+	});
+
+	// Tạo nhãn và dữ liệu
+	var labels = normalizedData.map(function(item) {
+		return item.name + ': ' + item.value.toFixed(2) + '%';
+	});
+	
+
+	var series = new Array() ;
+	normalizedData.map(function(item){
+		series.push(item.value);
+	});
+
+	var dataPreferences = {
+		series: [
+			[25, 30, 20, 25]
+		]
+	};
+
+	var optionsPreferences = {
+		donut: true,
+		donutWidth: 40,
+		startAngle: 0,
+		total: 100,
+		showLabel: false,
+		axisX: {
+			showGrid: false
+		}
+	};
+
+	//Chartist.Pie('#chartPreferences', dataPreferences, optionsPreferences);
+
+	Chartist.Pie('#chartPreferences', {
+		labels: labels,
+		series: series 
+	});
+
+</script>
