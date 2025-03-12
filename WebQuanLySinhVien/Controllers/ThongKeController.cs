@@ -26,22 +26,37 @@ namespace WebQuanLySinhVien.Controllers
                 manganh = "KTPM";
             }
             var danhSachIdHocPhan = _context.Hocphans.Where(hp => hp.MaNganh==manganh).OrderBy(hp => hp.MaHp).Select(hp => hp.MaHp).ToList(); // lấy danh sách hp
-            var danhSachSoLuongSinhVien = new List<SoLuongSinhVien>();
+            var danhSachSoLuongSinhVien = new List<SoLuongSinhVien>(); //tạo list
+            var danhSachIDNganh = _context.Nganhs.OrderBy(n => n.MaNganh).Select(n => n.MaNganh).ToList(); //lấy danh sach id ngành
+              
             // tạo danh sách gồm mã hp và số lượng sinh viên tương ứng
             foreach (var hp in danhSachIdHocPhan )
             {
-                var sl = _context.Diemhps.Count(d =>d.MaHp==hp);
+                var sl = _context.Diemhps.Count(d =>d.MaHp==hp); // đếm số lượng sv
+                var tenHP = _context.Hocphans.Where(h => h.MaHp == hp).Select(h => h.TenHp).FirstOrDefault(); // lấy tên hp
+                int[] soLuongSVtheoDiem = new int[11]; //tạo mảng chứa số lượng sinh viên của từng điểm từ 0 - 10
+                for (int i = 0; i <= 10; i++)
+                {
+                    soLuongSVtheoDiem[i] = _context.Diemhps.Where(d => d.MaHp == hp).Count(d => d.DiemHp == i);
+                }; 
+                var trentb = _context.Diemhps.Where(h => h.MaHp == hp).Count(h => h.DiemHp >= 5); // đếm số lượng điểm từ 5 trở lên
+                var duoitb = _context.Diemhps.Where(h => h.MaHp == hp).Count(h => h.DiemHp < 5); // đếm số lượng điểm từ 5 trở xuống
 
                 var slsv = new SoLuongSinhVien
                 {
-                    MaHP = hp,
-                    SoLuong = sl
+                    MaHP = tenHP,
+                    SoLuong = sl,
+                    DanhSachSoLuongTheoDiem = soLuongSVtheoDiem,
+                    SoluongTrenTB = trentb,
+                    SoluongDuoiTB = duoitb
                 };
 
                 danhSachSoLuongSinhVien.Add(slsv);
             }    
             var viewModel = new SL_SinhVienNganh
             {
+                DanhSachIDNganh = danhSachIDNganh,
+                SelectedID = manganh,
                 IdNganh = manganh,
                 DanhSachIdHocPhan = danhSachIdHocPhan,
                 DanhSachSoLuongSinhVien = danhSachSoLuongSinhVien
