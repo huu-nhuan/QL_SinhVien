@@ -10,7 +10,7 @@
 		</div>
 			
 		<div class="content">
-			<select asp-for="SelectedID" class="form-control" id="userselect" onchange="redirectToThongke(this.value)">
+			<select asp-for="SelectedID" class="form-control" id="userselect" onchange="redirectToThongke()">
 				<option value="">-- chọn mã ngành --</option>
 				@foreach (var id in Model.DanhSachIDNganh)
 				{
@@ -46,7 +46,7 @@
 				<p class="category">Số điểm của sinh viên theo từng học phần trong ngành</p>
 			</div>
 			<div class="content">
-				<div id="chartHours" class="ct-chart "></div>
+				<div id="chartSales" class="ct-chart "></div>
 				<div class="footer">
 					<div id="legend2" class="legend"></div>
 				</div>
@@ -73,7 +73,33 @@
 		</div>
 	</div>
 </div>
-
+<div class="row">
+	<div class="col-md-12">
+		<div class="card">
+			<div class="header">
+				<h4 class="title">Thống kê số điểm sinh viên</h4>
+				<p class="category">Thống kê số điểm sinh viên theo từng học phần </p>
+				<select asp-for="SelectedSVID" class="form-control" id="userselect2" onchange="redirectToThongke()">
+					<option value="">-- chọn mã sinh viên --</option>
+					@foreach (var id in Model.DanhSachSVTheoNganh)
+					{
+						<option value="@id" selected="@(Model.SelectedSVID == id ? "selected" : null)">
+							@id
+						</option>
+					}
+				</select>
+			</div>
+			<div class="content">
+				<div id="chartViews" class="ct-chart "></div>
+				<div class="footer">
+					<div id="legend4" class="legend">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <!-- javascript -->
 <script>
 	window.onload = function(){
@@ -169,51 +195,6 @@
 
 		//--------------------------------------------------
 
-		//BIỂU ĐỒ ĐƯỜNG
-
-		const mangCacDiem = dataList.map(item => item.DanhSachSoLuongTheoDiem);
-
-		console.log(mangCacDiem);
-
-		const tatCaDiem = mangCacDiem.flat();
-
-		// Tìm giá trị lớn nhất
-		const giaTriLonNhat = Math.max(...tatCaDiem);
-
-		var dataSales = {
-		labels: ['0 điểm', '1 điểm', '2 điểm', '3 điểm', '4 điểm', '5 điểm', '6 điểm', '7 điểm', '8 điểm', '9 điểm', '10 điểm'],
-		series: mangCacDiem
-		};
-
-		var optionsSales = {
-		  lineSmooth: false,
-		  low: 0,
-		  high: giaTriLonNhat,
-		  showArea: true,
-		  height: "245px",
-		  axisX: {
-			showGrid: false,
-		  },
-		  lineSmooth: Chartist.Interpolation.simple({
-			divisor: 3
-		  }),
-		  showLine: false,
-		  showPoint: false,
-		};
-
-		var responsiveSales = [
-		  ['screen and (max-width: 640px)', {
-			axisX: {
-			  labelInterpolationFnc: function (value) {
-				return value[0];
-			  }
-			}
-		  }]
-		];
-
-		Chartist.Line('#chartHours', dataSales, optionsSales, responsiveSales);
-
-		//--------------------------------------------
 
 		//BIỂU ĐỒ ĐÔI
 
@@ -256,11 +237,93 @@
 		];
 
 		Chartist.Bar('#chartActivity', data, options, responsiveOptions);
+
+		//----------------------------------------------------------
+		//BIỂU ĐỒ ĐƯỜNG
+		const mangCacDiem = dataList.map(item => item.DanhSachSoLuongTheoDiem);
+
+		console.log(mangCacDiem);
+
+		const tatCaDiem = mangCacDiem.flat();
+
+	// Tìm giá trị lớn nhất
+		const giaTriLonNhat = Math.max(...tatCaDiem);
+
+		var dataSales = {
+		labels: ['0 điểm', '1 điểm', '2 điểm', '3 điểm', '4 điểm', '5 điểm', '6 điểm', '7 điểm', '8 điểm', '9 điểm', '10 điểm'],
+		series: mangCacDiem
+		};
+				var dataSales = {
+		  labels: ['0 điểm', '1 điểm', '2 điểm', '3 điểm', '4 điểm', '5 điểm', '6 điểm', '7 điểm', '8 điểm', '9 điểm', '10 điểm'],
+		  series: mangCacDiem
+	  
+		};
+
+		var optionsSales = 
+		{
+			lineSmooth: false,
+				axisY: {
+				offset: 40
+			},
+			low: 0,
+			high: giaTriLonNhat
+		};
+
+		Chartist.Line('#chartSales', dataSales, optionsSales);
+
+		//---------------------------------------------
+		//BIỂU ĐỒ CỘT
+		var dataDiem = _model.DanhSachDiem;
+		if (!Array.isArray(dataList)) {
+			dataList = Object.values(dataList); // Chuyển đổi object thành mảng
+		}
+		var dataViews = {
+			labels: danhSachHP,
+			series: [dataDiem]
+		};
+
+
+		var optionsViews = {
+			seriesBarDistance: 10,
+			classNames: {
+				bar: 'ct-bar ct-azure'
+			},
+			axisX: {
+				showGrid: false
+			},
+			axisY: {
+				onlyInteger: true, 
+				low: 0,            
+				high: 10           
+			}
+		};
+
+		var responsiveOptionsViews = [
+			['screen and (max-width: 640px)', {
+				seriesBarDistance: 5,
+				axisX: {
+					labelInterpolationFnc: function (value) {
+						return value[0];
+					}
+				}
+			}]
+		];
+
+		Chartist.Bar('#chartViews', dataViews, optionsViews, responsiveOptionsViews);
+
 	}
 
 	function redirectToThongke(selectedID) {
-		if (selectedID) {
+		var selectedID = document.getElementById("userselect").value;
+		var selectedID2 = document.getElementById("userselect2").value;
+		console.log("ID1: " + selectedID);
+		console.log("ID2: " + selectedID2);
+		if (selectedID && selectedID2) {
+			window.location.href = '@Url.Action("Index", "ThongKe")' + '?manganh=' + selectedID + '&masv=' + selectedID2;
+		}
+		else if (selectedID) {
 			window.location.href = '@Url.Action("Index", "ThongKe")' + '?manganh=' + selectedID;
 		}
 	}
 </script>
+

@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using WebQuanLySinhVien.email;
 using WebQuanLySinhVien.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace WebQuanLySinhVien.Controllers
 {
@@ -31,7 +34,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(Taikhoan tk)
+        public async Task<IActionResult> LoginAsync(Taikhoan tk)
         {
             if (HttpContext.Session.GetString("TenDangNhap") == null)
             {
@@ -40,6 +43,17 @@ namespace WebQuanLySinhVien.Controllers
                 if (u != null)
                 {
                     HttpContext.Session.SetString("TenDangNhap", u.TenDangNhap.ToString());
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, u.TenDangNhap),
+                        new Claim("Id", u.IdTk.ToString()),
+                        new Claim("Role", u.VaiTro.ToString())  // Lưu vai trò vào Claims
+                    };
+
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
                     return RedirectToAction("Index", "Home");
                 }
             }

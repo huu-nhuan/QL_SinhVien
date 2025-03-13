@@ -3,8 +3,11 @@
     public class SL_SinhVienNganh
     {
         public IList<string>? DanhSachIDNganh { get; set; }
+        public IList<string>? DanhSachSVTheoNganh { get; set; }
         public string? SelectedID { get; set; }
+        public string? SelectedSVID { get; set; }
         public string? IdNganh { get; set; }
+        public int[] DanhSachDiem { get; set; }
         public IList<string>? DanhSachIdHocPhan { get; set; }
         public List<SoLuongSinhVien> DanhSachSoLuongSinhVien { get; set; }
     }

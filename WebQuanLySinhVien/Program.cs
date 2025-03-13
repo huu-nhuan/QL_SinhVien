@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using WebQuanLySinhVien.email;
 using WebQuanLySinhVien.Models;
@@ -11,6 +12,19 @@ builder.Services.AddSession();
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddDbContext<QuanLySinhVienContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("QuanLySinhVienContext")));
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Access/Login"; 
+        options.AccessDeniedPath = "/Home/Error"; 
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "1"));
+    options.AddPolicy("GiangVien", policy => policy.RequireClaim("Role", "2"));
+    options.AddPolicy("SinhVien", policy => policy.RequireClaim("Role", "3"));
+});
 
 var app = builder.Build();
 
@@ -27,6 +41,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
