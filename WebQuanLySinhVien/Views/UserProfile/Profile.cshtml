@@ -1,6 +1,8 @@
 ﻿@model WebQuanLySinhVien.Models.ViewModels.UserProfile
 @{
     ViewData["Title"] = "Thông tin người dùng";
+    var userRole = User.FindFirst("Role")?.Value; // Lấy role từ Claims
+    var isDisabled = userRole != "1" ? "disabled" : ""; // Chỉ Admin mới được chọn, nếu role khác 1 thì isDisabled = "disabled"
 }
 @if (ViewBag.Thongbao != null)
 {
@@ -19,15 +21,21 @@
                     <div class="col-md-5">
                         <div class="form-group">
                             <label>Mã số</label>
-                            <select asp-for="SelectedID" class="form-control" id="userSelect" onchange="redirectToProfile(this.value)">
-                                <option value="">-- Chọn ID --</option>
-                                @foreach (var id in Model.DanhSachID)
-                                {
-                                    <option value="@id" selected="@(Model.SelectedID == id ? "selected" : null)">
-                                        @id
-                                    </option>
-                                }
-                            </select>
+                            @if(userRole =="1")
+                            {
+                                <select asp-for="SelectedID" class="form-control" id="userSelect" onchange="redirectToProfile(this.value)">
+                                    <option value="">-- Chọn ID --</option>
+                                    @foreach (var id in Model.DanhSachID)
+                                    {
+                                        <option value="@id" selected="@(Model.SelectedID == id ? "selected" : null)">
+                                            @id
+                                        </option>
+                                    }
+                                </select>
+                            } else
+                            {
+                                <input asp-for="SelectedID" class="form-control" readonly value="@Model.SelectedID">
+                            }      
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -77,14 +85,14 @@
                     </div>
                 </div>
 
-                <div class="row">
+                @* <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>About Me</label>
-                            <textarea rows="5" class="form-control" placeholder="Here can be your description" value="Mike">Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo.</textarea>
+                            <textarea rows="5" class="form-control" placeholder="Here can be your description" value="Mike">Lamborghini Mercy, I'm in that two seat Lambo.</textarea>
                         </div>
                     </div>
-                </div>
+                </div> *@
 
                 <button type="submit" class="btn btn-info btn-fill pull-right">Cập nhật</button>
                 <div class="clearfix"></div>

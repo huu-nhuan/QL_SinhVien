@@ -153,7 +153,7 @@ namespace WebQuanLySinhVien.Controllers
             if (sv == null && gv == null)
                 return BadRequest("Email không tồn tại trong hệ thống");
             TaoMaXacNhan();
-            var receiver = email;
+            string[] receiver = [email];
             var subject = "Mã xác nhận";
             var message = "Mã xác nhận của bạn là: " + HttpContext.Session.GetString("MaXacNhan");
 

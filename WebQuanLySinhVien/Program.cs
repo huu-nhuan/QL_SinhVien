@@ -24,6 +24,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "1"));
     options.AddPolicy("GiangVien", policy => policy.RequireClaim("Role", "2"));
     options.AddPolicy("SinhVien", policy => policy.RequireClaim("Role", "3"));
+    options.AddPolicy("GiangVienOrAdmin", policy => policy.RequireClaim("Role", "1", "2"));
 });
 
 var app = builder.Build();

@@ -7,7 +7,7 @@ namespace WebQuanLySinhVien.email
 {
     public class EmailSender : IEmailSender
     {
-        public Task SendEmailAsync(string email, string subject, string message)
+        public Task SendEmailAsync(string[] email, string subject, string message)
         {
             var mail = "kurowa820@gmail.com";
             var pw = "peat asib viku pjtm";
@@ -17,11 +17,20 @@ namespace WebQuanLySinhVien.email
                 EnableSsl = true,
                 Credentials = new NetworkCredential(mail, pw),
             };
-            return client.SendMailAsync(
-                new MailMessage(from: mail,
-                                to: email,
-                                subject,
-                                message));  
+
+            var mailMessage = new MailMessage
+            {
+                From = new MailAddress(mail),
+                Subject = subject,
+                Body = message,
+            };
+
+            foreach (var e in email)
+            {
+                mailMessage.To.Add(e);
+            }
+
+            return client.SendMailAsync(mailMessage);
         }
     }
 }

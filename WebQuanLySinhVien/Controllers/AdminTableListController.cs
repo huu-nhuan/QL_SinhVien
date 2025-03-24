@@ -22,7 +22,6 @@ namespace WebQuanLySinhVien.Controllers
         {
             _context = context;
         }
-        [Authorize(Policy = "Admin")]
         public IActionResult Index(int? pageKhoa, int? pageNganh, int? pageHP, int? pageTK, int? pageGV, int? pageLop, int? pageSV, int? pageDHP)
         {
             int pageSize = 5;

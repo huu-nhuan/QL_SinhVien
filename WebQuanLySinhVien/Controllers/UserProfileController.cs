@@ -24,7 +24,14 @@ namespace WebQuanLySinhVien.Controllers
                               _context.GiangViens.OrderBy(gv => gv.MaGv).Select(gv => gv.MaGv)).ToList();
             if (selectedID == null)
             {
-                selectedID = "None";
+                var userRole = User.FindFirst("Role")?.Value;
+                var userID = User.FindFirst("Id")?.Value;
+                if (userRole == "2" || (userRole == "3"))
+                {
+                    var SVID = _context.SinhViens.Where(sv => sv.IdTk == userID).Select(sv => sv.MaSv).FirstOrDefault();
+                    var GVID = _context.GiangViens.Where(gv => gv.IdTk == userID).Select(sv => sv.MaGv).FirstOrDefault();
+                    selectedID = SVID ?? (GVID ?? "None");
+                }
             }
             var sv = await _context.SinhViens.AsNoTracking().FirstOrDefaultAsync(s => s.MaSv==selectedID);
             var gv = await _context.GiangViens.AsNoTracking().FirstOrDefaultAsync(g => g.MaGv==selectedID);
