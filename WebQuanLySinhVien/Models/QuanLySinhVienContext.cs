@@ -77,9 +77,7 @@ public partial class QuanLySinhVienContext : DbContext
                 .HasColumnName("email");
             entity.Property(e => e.GioiTinh).HasMaxLength(10);
             entity.Property(e => e.HoTen).HasMaxLength(50);
-            entity.Property(e => e.IdTk)
-                .HasMaxLength(10)
-                .HasColumnName("ID_TK");
+            entity.Property(e => e.IdTk).HasColumnName("ID_TK");
             entity.Property(e => e.Sdt)
                 .HasMaxLength(10)
                 .HasColumnName("SDT");
@@ -170,9 +168,7 @@ public partial class QuanLySinhVienContext : DbContext
                 .HasColumnName("email");
             entity.Property(e => e.GioiTinh).HasMaxLength(10);
             entity.Property(e => e.HoTen).HasMaxLength(50);
-            entity.Property(e => e.IdTk)
-                .HasMaxLength(10)
-                .HasColumnName("ID_TK");
+            entity.Property(e => e.IdTk).HasColumnName("ID_TK");
             entity.Property(e => e.MaLop).HasMaxLength(10);
             entity.Property(e => e.Sdt)
                 .HasMaxLength(10)
@@ -180,7 +176,7 @@ public partial class QuanLySinhVienContext : DbContext
 
             entity.HasOne(d => d.IdTkNavigation).WithMany(p => p.SinhViens)
                 .HasForeignKey(d => d.IdTk)
-                .HasConstraintName("FK_SinhVien_TAIKHOAN");
+                .HasConstraintName("FK_SinhVien_TaiKhoan");
 
             entity.HasOne(d => d.MaLopNavigation).WithMany(p => p.SinhViens)
                 .HasForeignKey(d => d.MaLop)
@@ -190,13 +186,12 @@ public partial class QuanLySinhVienContext : DbContext
 
         modelBuilder.Entity<Taikhoan>(entity =>
         {
-            entity.HasKey(e => e.IdTk);
+            entity.HasKey(e => e.IdTk).HasName("PK__TAIKHOAN__8B63B1A9CC67867F");
 
             entity.ToTable("TAIKHOAN");
 
-            entity.Property(e => e.IdTk)
-                .HasMaxLength(10)
-                .HasColumnName("ID_TK");
+            entity.Property(e => e.IdTk).HasColumnName("ID_TK");
+            entity.Property(e => e.ImagePath).HasMaxLength(255);
             entity.Property(e => e.MatKhau).HasMaxLength(50);
             entity.Property(e => e.TenDangNhap).HasMaxLength(50);
         });

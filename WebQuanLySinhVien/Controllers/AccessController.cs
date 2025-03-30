@@ -56,7 +56,10 @@ namespace WebQuanLySinhVien.Controllers
 
                     return RedirectToAction("Index", "Home");
                 }
+                ViewData["thongbao"] = "Tên đăng nhập hoặc mật khẩu sai";
+                return View();
             }
+            ViewData["thongbao"] = "Đăng nhập thất bại";
             return View();
         }
 
@@ -72,30 +75,46 @@ namespace WebQuanLySinhVien.Controllers
         {
             var sv = db.SinhViens.Where(x => x.Email.Equals(email)).FirstOrDefault();
             var gv = db.GiangViens.Where(y => y.Email.Equals(email)).FirstOrDefault();
-            if (sv == null && gv == null) return View();
-            else if (gv != null)
+            var tendn = db.Taikhoans.Where(t => t.TenDangNhap.Equals(tk.TenDangNhap)).FirstOrDefault();
+            if (sv == null && gv == null)
             {
-                tk.IdTk = TaoID();
+                ViewData["thongbao"] = "Email không tồn tại trong hệ thống";
+                return View();  
+            }
+            if (tendn != null)
+            {
+                ViewData["thongbao"] = "Tên đăng nhập này đã tồn tại";
+                return View();
+            }
+            if (gv != null)
+            {
+                if(isTkExit(gv.IdTk))
+                {
+                    ViewData["thongbao"] = "Tài khoản đã tồn tại";
+                    return View();
+                }    
+                //tk.IdTk = TaoID();
                 tk.VaiTro = 2;
                 db.Taikhoans.Add(tk);
-                gv.IdTk = tk.IdTk;
-
+                db.SaveChanges();
+                gv.IdTk = db.Taikhoans.OrderBy(i=>i.IdTk).Select(i=>i.IdTk).LastOrDefault();
                 db.SaveChanges();
             }
             else if (sv != null)
             {
-                tk.IdTk = TaoID();
+                if (isTkExit(sv.IdTk))
+                {
+                    ViewData["thongbao"] = "Tài khoản đã tồn tại";
+                    return View();
+                }
+                //tk.IdTk = TaoID();
                 tk.VaiTro = 3;
                 db.Taikhoans.Add(tk);
-                sv.IdTk = tk.IdTk;
-
+                db.SaveChanges();
+                sv.IdTk = db.Taikhoans.OrderBy(i => i.IdTk).Select(i => i.IdTk).LastOrDefault();
                 db.SaveChanges();
             }
-            //var receiver = "soroje2090@fanicle.com";
-            //var subject = "test";
-            //var message = "test";
-
-            //await _emailSender.SendEmailAsync(receiver, subject, message);
+            TempData["Message"] = "Đăng ký thành công";
             return RedirectToAction("Login", "Access");
         }
 
@@ -111,6 +130,7 @@ namespace WebQuanLySinhVien.Controllers
         public IActionResult EmailConfirm()
         {
             ViewData["Email"] = TempData["Email"];
+            ViewData["thongbao"] = TempData["thongbao"];
             return View();
         }
 
@@ -121,9 +141,16 @@ namespace WebQuanLySinhVien.Controllers
             var sv = db.SinhViens.Where(x => x.Email.Equals(email)).FirstOrDefault();
             var gv = db.GiangViens.Where(y => y.Email.Equals(email)).FirstOrDefault();
             if (sv == null && gv == null)
-                return BadRequest("Email không tồn tại trong hệ thống");
+            {
+                ViewData["thongbao"] = "Email không tồn tại trong hệ thống";
+                return View();
+            }
             if (verificationCode != HttpContext.Session.GetString("MaXacNhan"))
-                return BadRequest("Mã xác nhận không chính xác");
+            {
+                TempData["Email"] = email;
+                ViewData["thongbao"] = "Mã xác nhận không chính xác";
+                return View();
+            }
             else if (gv != null && gv.IdTk != null)
             {
                 var tk = db.Taikhoans.Where(x => x.IdTk.Equals(gv.IdTk)).FirstOrDefault();
@@ -140,7 +167,11 @@ namespace WebQuanLySinhVien.Controllers
                 HttpContext.Session.Remove("email");
                 db.SaveChanges();
             }
-            else return BadRequest("Bạn chưa tạo tài khoản. Hãy tạo một tài khoản mới");
+            else
+            {
+                ViewData["thongbao"] = "Bạn chưa tạo tài khoản. Hãy tạo một tài khoản mới";
+                return View();
+            }
 
             return RedirectToAction("Login", "Access");
         }
@@ -151,7 +182,10 @@ namespace WebQuanLySinhVien.Controllers
             var sv = db.SinhViens.Where(x => x.Email.Equals(email)).FirstOrDefault();
             var gv = db.GiangViens.Where(y => y.Email.Equals(email)).FirstOrDefault();
             if (sv == null && gv == null)
-                return BadRequest("Email không tồn tại trong hệ thống");
+            {
+                TempData["thongbao"] = "Email không tồn tại trong hệ thống";
+                return RedirectToAction("EmailConfirm", "Access");
+            }
             TaoMaXacNhan();
             string[] receiver = [email];
             var subject = "Mã xác nhận";
@@ -171,7 +205,7 @@ namespace WebQuanLySinhVien.Controllers
             {
                 randomid = TaoIDRandom();
             }
-            while (db.Taikhoans.Any(x=>x.IdTk==randomid));
+            while (db.Taikhoans.Any(x=>x.IdTk.ToString() ==randomid));
             return randomid;
         }
 
@@ -204,6 +238,12 @@ namespace WebQuanLySinhVien.Controllers
                 result.Append(digits[index]);
             }
             HttpContext.Session.SetString("MaXacNhan", result.ToString());
+        }
+
+        private bool isTkExit(int? id)
+        {
+            if (id == null) return false;
+            return true;
         }
     }
 }

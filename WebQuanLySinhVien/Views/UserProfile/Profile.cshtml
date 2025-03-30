@@ -1,105 +1,187 @@
 ﻿@model WebQuanLySinhVien.Models.ViewModels.UserProfile
+@using System.Text.Json
 @{
     ViewData["Title"] = "Thông tin người dùng";
     var userRole = User.FindFirst("Role")?.Value; // Lấy role từ Claims
     var isDisabled = userRole != "1" ? "disabled" : ""; // Chỉ Admin mới được chọn, nếu role khác 1 thì isDisabled = "disabled"
 }
-@if (ViewBag.Thongbao != null)
+@if (ViewData["Thongbao"] != null)
 {
-    <div class="alert alert-success">
-        @ViewBag.Thongbao
-    </div>
+    <script>
+          swal({
+              title: "Lỗi!",
+              text: "@Html.Raw(ViewData["Thongbao"])",
+              icon: "error",
+        });
+    </script>
 }
-<div class="col-md-8">
-    <div class="card">
-        <div class="header">
-            <h4 class="title">Edit Profile</h4>
+@if (ViewData["thanhcong"] != null)
+{
+    <script>
+          swal({
+              title: "Thành công",
+              text: "@Html.Raw(ViewData["thanhcong"])",
+              icon: "success",
+        });
+    </script>
+}
+
+@if (ViewBag.Errors != null)
+{
+    <script>
+        const errors = @Html.Raw(ViewBag.Errors);
+        console.log("ModelState Errors:", errors);
+    </script>
+}
+
+<div class="col-md-12">
+    <form asp-action="Profile" method="post" enctype="multipart/form-data">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="header">
+                    <h4 class="title">Edit Profile</h4>
+                </div>
+                <div class="content">
+            
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label>Mã số</label>
+                                @if(userRole =="1")
+                                {
+                                    <select asp-for="SelectedID" class="form-control" id="userSelect" onchange="redirectToProfile(this.value)">
+                                        <option value="">-- Chọn ID --</option>
+                                        @foreach (var id in Model.DanhSachID)
+                                        {
+                                            <option value="@id" selected="@(Model.SelectedID == id ? "selected" : null)">
+                                                @id
+                                            </option>
+                                        }
+                                    </select>
+                                } else
+                                {
+                                    <input asp-for="SelectedID" class="form-control" readonly value="@Model.SelectedID">
+                                }      
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label asp-for="Email" for="exampleInputEmail1">Email</label>
+                                <input asp-for="Email" type="email" class="form-control" placeholder="Email" value="@Model.Email">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label asp-for="Sdt">Số điện thoại</label>
+                                <input asp-for="Sdt" type="number" class="form-control" placeholder="Số điện thoại" value="@Model.Sdt">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="HoTen">Họ tên</label>
+                                <input asp-for="HoTen" type="text" class="form-control" placeholder="Họ tên" value="@Model.HoTen">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="GioiTinh">Giới tính</label>
+                                @* <input asp-for="GioiTinh" type="text" class="form-control" placeholder="Giới tính" value="@Model.GioiTinh"> *@
+                                <div class="form-check form-check-radio">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" asp-for="GioiTinh" type="radio" value="Nam" /> Nam
+                                    </label>
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" asp-for="GioiTinh" type="radio" value="Nữ" /> Nữ
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="NgaySinh">Ngày sinh</label>
+                                <input asp-for="NgaySinh" type="date" class="form-control" placeholder="Ngày sinh" 
+                                value="@(Model.NgaySinh.HasValue ? Model.NgaySinh.Value.ToString("yyyy-MM-dd") : "")">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label asp-for="DiaChi">Địa chỉ</label>
+                                <input asp-for="DiaChi" type="text" class="form-control" placeholder="Địa chỉ" value="@Model.DiaChi ">
+                            </div>
+                        </div>
+                    </div>
+
+                    @* <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>About Me</label>
+                                <textarea rows="5" class="form-control" placeholder="Here can be your description" value="Mike">Lamborghini Mercy, I'm in that two seat Lambo.</textarea>
+                            </div>
+                        </div>
+                    </div> *@
+
+                    <button type="submit" class="btn btn-info btn-fill pull-right">Cập nhật</button>
+                    <div class="clearfix"></div>
+            
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-user">
+                <div class="image">
+                    <img src="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&amp;fm=jpg&amp;h=300&amp;q=75&amp;w=400" alt="...">
+                </div>
+                <div class="content">
+                    <div class="author">
+                        <a href="javascript:void(0);" onclick="$('#imageFile').click();">
+                            <img id="previewImg" class="avatar border-gray" src="@(Model.ImagePath ?? "/template/assets/img/faces/face-0.jpg")" alt="Ảnh đại diện">
+                            <h4 class="title">
+                                @Model.HoTen<br>
+                                <small>@Model.Email</small>
+                            </h4>
+                        </a>
+                        <input type="file" id="imageFile" name="imageFile" style="display: none;" />
+                    </div>
+                    <p class="description text-center">
+                        @Model.DiaChi
+                    </p>
+                </div>
+                <hr>
+            </div>
+        </div>
+    </form>
+</div> 
+@* <div class="col-md-4">
+    <div class="card card-user">
+        <div class="image">
+            <img src="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&amp;fm=jpg&amp;h=300&amp;q=75&amp;w=400" alt="...">
         </div>
         <div class="content">
-            <form asp-action="Profile" method="post">
-                <div class="row">
-                    <div class="col-md-5">
-                        <div class="form-group">
-                            <label>Mã số</label>
-                            @if(userRole =="1")
-                            {
-                                <select asp-for="SelectedID" class="form-control" id="userSelect" onchange="redirectToProfile(this.value)">
-                                    <option value="">-- Chọn ID --</option>
-                                    @foreach (var id in Model.DanhSachID)
-                                    {
-                                        <option value="@id" selected="@(Model.SelectedID == id ? "selected" : null)">
-                                            @id
-                                        </option>
-                                    }
-                                </select>
-                            } else
-                            {
-                                <input asp-for="SelectedID" class="form-control" readonly value="@Model.SelectedID">
-                            }      
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label asp-for="Email" for="exampleInputEmail1">Email</label>
-                            <input asp-for="Email" type="email" class="form-control" placeholder="Email" value="@Model.Email">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label asp-for="Sdt">Số điện thoại</label>
-                            <input asp-for="Sdt" type="number" class="form-control" placeholder="Số điện thoại" value="@Model.Sdt">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label asp-for="HoTen">Họ tên</label>
-                            <input asp-for="HoTen" type="text" class="form-control" placeholder="Họ tên" value="@Model.HoTen">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="GioiTinh">Giới tính</label>
-                            <input asp-for="GioiTinh" type="text" class="form-control" placeholder="Giới tính" value="@Model.GioiTinh">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label asp-for="NgaySinh">Ngày sinh</label>
-                            <input asp-for="NgaySinh" type="date" class="form-control" placeholder="Ngày sinh" value="@Model.NgaySinh">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label asp-for="DiaChi">Địa chỉ</label>
-                            <input asp-for="DiaChi" type="text" class="form-control" placeholder="Địa chỉ" value="@Model.DiaChi ">
-                        </div>
-                    </div>
-                </div>
-
-                @* <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label>About Me</label>
-                            <textarea rows="5" class="form-control" placeholder="Here can be your description" value="Mike">Lamborghini Mercy, I'm in that two seat Lambo.</textarea>
-                        </div>
-                    </div>
-                </div> *@
-
-                <button type="submit" class="btn btn-info btn-fill pull-right">Cập nhật</button>
-                <div class="clearfix"></div>
-            </form>
+            <div class="author">
+                <a href="#">
+                    <img class="avatar border-gray" src="~/template/assets/img/faces/face-0.jpg" alt="...">
+                    <h4 class="title">
+                        @Model.HoTen<br>
+                        <small>@Model.Email</small>
+                    </h4>
+                </a>
+            </div>
+            <p class="description text-center">
+                @Model.DiaChi
+            </p>
         </div>
+        <hr>
     </div>
-</div> 
+</div> *@
 @* <select class="form-control" id="userSelect" onchange="redirectToProfile(this.value)">
     <option value="">-- Chọn ID --</option>
     @foreach (var id in Model.DanhSachID)
@@ -115,5 +197,25 @@
             window.location.href = '@Url.Action("Profile", "UserProfile")' + '?selectedID=' + selectedID;
         }
     }
+    window.onload = function(){
+        var _model = @Html.Raw(JsonSerializer.Serialize(Model)); console.log(_model);
+    }
 </script>
 
+<script>
+    $(document).ready(function () {
+        $("#imageFile").change(function (event) {
+            var file = event.target.files[0]; // Lấy file người dùng chọn
+
+            if (!file) {
+                // Nếu không có file (người dùng nhấn Cancel), không làm gì cả
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function () {
+                $("#previewImg").attr("src", reader.result);
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        });
+    });
+</script>

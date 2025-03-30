@@ -5,13 +5,15 @@ namespace WebQuanLySinhVien.Models;
 
 public partial class Taikhoan
 {
-    public string IdTk { get; set; } = null!;
+    public int IdTk { get; set; }
 
     public string TenDangNhap { get; set; } = null!;
 
     public string MatKhau { get; set; } = null!;
 
     public int VaiTro { get; set; }
+
+    public string? ImagePath { get; set; }
 
     public virtual ICollection<GiangVien> GiangViens { get; set; } = new List<GiangVien>();
 

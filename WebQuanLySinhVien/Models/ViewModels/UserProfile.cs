@@ -10,5 +10,6 @@
         public string Sdt { get; set; } = null!;
         public string? DiaChi { get; set; }
         public string Email { get; set; } = null!;
+        public string? ImagePath { get; set; }
     }
 }

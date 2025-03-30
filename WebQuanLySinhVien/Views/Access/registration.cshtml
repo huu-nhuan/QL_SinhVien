@@ -15,12 +15,17 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebQuanLySinhVien.styles.css" asp-append-version="true" />
+    <script src="../../template/custom/sweetalert.min.js"></script>
     <script>
         function validatePasswords() {
             var password = document.getElementById("MatKhau").value;
             var confirmPassword = document.getElementsByName("confirmPassword")[0].value;
             if (password !== confirmPassword) {
-                alert("Mật khẩu không giống nhau!");
+                swal({
+                  title: "Lỗi!",
+                  text: "Mật khẩu không giống nhau",
+                  icon: "error",
+            });
                 return false;
             }
             return true;
@@ -31,7 +36,7 @@
     <div class="container">
         <div class="registration form">
             <header>Đăng ký</header>
-            @using (Html.BeginForm("Registration", "Access", FormMethod.Post@* , new { onsubmit = "return validatePasswords()" }  *@))
+            @using (Html.BeginForm("Registration", "Access", FormMethod.Post, new { onsubmit = "return validatePasswords()" } ))
             {
                 <input type="text" placeholder="Nhập Email" name="email" required>
                 @Html.TextBoxFor(x => x.TenDangNhap, new { placeholder = "Tên đăng nhập", required = "required", autofocus = "autofocus" })
@@ -49,5 +54,15 @@
             </div>
         </div>
     </div>
+    @if (ViewData["thongbao"] != null)
+    {
+        <script>
+              swal({
+                  title: "Lỗi!",
+                  text: "@Html.Raw(ViewData["Thongbao"])",
+                  icon: "error",
+            });
+        </script>
+    }
 </body>
 </html>

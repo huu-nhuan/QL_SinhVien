@@ -19,7 +19,7 @@ public partial class SinhVien
 
     public string? DiaChi { get; set; }
 
-    public string? IdTk { get; set; }
+    public int? IdTk { get; set; }
 
     public string Email { get; set; } = null!;
 

@@ -33,7 +33,7 @@ namespace WebQuanLySinhVien.Controllers
             }
 
             var taikhoan = await _context.Taikhoans
-                .FirstOrDefaultAsync(m => m.IdTk == id);
+                .FirstOrDefaultAsync(m => m.IdTk.ToString() == id);
             if (taikhoan == null)
             {
                 return NotFound();
@@ -65,9 +65,9 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Taikhoans/Edit/5
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
+            if (id < 0)
             {
                 return NotFound();
             }
@@ -85,7 +85,7 @@ namespace WebQuanLySinhVien.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("IdTk,TenDangNhap,MatKhau,VaiTro")] Taikhoan taikhoan)
+        public async Task<IActionResult> Edit(int id, [Bind("IdTk,TenDangNhap,MatKhau,VaiTro")] Taikhoan taikhoan)
         {
             if (id != taikhoan.IdTk)
             {
@@ -124,7 +124,7 @@ namespace WebQuanLySinhVien.Controllers
             }
 
             var taikhoan = await _context.Taikhoans
-                .FirstOrDefaultAsync(m => m.IdTk == id);
+                .FirstOrDefaultAsync(m => m.IdTk.ToString() == id);
             if (taikhoan == null)
             {
                 return NotFound();
@@ -136,7 +136,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: Taikhoans/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var taikhoan = await _context.Taikhoans.FindAsync(id);
             if (taikhoan != null)
@@ -148,7 +148,7 @@ namespace WebQuanLySinhVien.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TaikhoanExists(string id)
+        private bool TaikhoanExists(int id)
         {
             return _context.Taikhoans.Any(e => e.IdTk == id);
         }

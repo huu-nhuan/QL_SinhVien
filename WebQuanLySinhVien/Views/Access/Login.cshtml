@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebQuanLySinhVien.styles.css" asp-append-version="true" />
+    <script src="../../template/custom/sweetalert.min.js"></script>
+    
 </head>
 <body>
     <div class="container">
@@ -43,5 +45,24 @@
             </div>
         </div>
     </div>
+    @if (ViewData["thongbao"] != null)
+    {
+        <script>
+              swal({
+                  title: "Lỗi!",
+                  text: "@Html.Raw(ViewData["Thongbao"])",
+                  icon: "error",
+            });
+        </script>
+    }
+    @if (TempData["Message"] != null)
+    {
+        <script>
+              swal({
+                  text: "@Html.Raw(TempData["Message"])",
+                  icon: "success",
+            });
+        </script>
+    }
 </body>
 </html>

@@ -82,10 +82,69 @@
                     </a>
                 </li>
                 <li >
-                    <a asp-area="" asp-controller="AdminTableList" asp-action="Index">
+                   @*  <a asp-area="" asp-controller="AdminTableList" asp-action="Index">
                         <i class="pe-7s-note2"></i>
                         <p>Danh sách bảng</p>
+                    </a> *@
+                    <a class="nav-link" data-toggle="collapse" href="#formsExamples">
+                        <i class="pe-7s-note2"></i>
+                        <p>
+                            Forms
+                            <b class="caret"></b>
+                        </p>
                     </a>
+                        <div class="collapse " id="formsExamples">
+                            <ul class="nav">
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Khoas" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Khoa</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Nganhs" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Ngành</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Hocphans" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Học Phần</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="GiangViens" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Giảng Viên</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Lops" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Lớp</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="SinhViens" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Sinh Viên</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Diemhps" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Điểm</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Taikhoans" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Tài Khoản</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                 </li>
                 <li >
                     <a asp-area="" asp-controller="ThongKe" asp-action="Index">
@@ -163,19 +222,19 @@
                         @* <li class="dropdown">
                               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     <p>
-										Dropdown
+										dropdown
 										<b class="caret"></b>
 									</p>
 
                               </a>
                               <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something</a></li>
+                                <li><a href="#">action</a></li>
+                                <li><a href="#">another action</a></li>
+                                <li><a href="#">something</a></li>
+                                <li><a href="#">another action</a></li>
+                                <li><a href="#">something</a></li>
                                 <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
+                                <li><a href="#">separated link</a></li>
                               </ul>
                         </li> *@
                         <li>
@@ -242,10 +301,10 @@
 
 
     <!--  Google Maps Plugin    -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script>
+    @* <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script> *@
 
     <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
-	@* <script src="../../template/assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script> *@
+	<script src="../../template/assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
 
 	<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 	@* <script src="../../template/assets/js/demo.js"></script> *@

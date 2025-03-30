@@ -58,17 +58,18 @@ namespace WebQuanLySinhVien.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaSv,MaHp,DiemHp")] Diemhp diemhp)
+        public async Task<IActionResult> Create([Bind("MaSv,MaHp,DiemHp")] Diemhp diem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(diemhp);
+                _context.Add(diem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaHp"] = new SelectList(_context.Hocphans, "MaHp", "MaHp", diemhp.MaHp);
-            ViewData["MaSv"] = new SelectList(_context.SinhViens, "MaSv", "MaSv", diemhp.MaSv);
-            return View(diemhp);
+            ViewData["MaHp"] = new SelectList(_context.Hocphans, "MaHp", "MaHp", diem.MaHp);
+            ViewData["MaSv"] = new SelectList(_context.SinhViens, "MaSv", "MaSv", diem.MaSv);
+            ViewData["Errors"] = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            return View(diem);
         }
 
         // GET: Diemhps/Edit/5
@@ -94,9 +95,9 @@ namespace WebQuanLySinhVien.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("MaSv,MaHp,DiemHp")] Diemhp diemhp)
+        public async Task<IActionResult> Edit(string id, [Bind("MaSv,MaHp,DiemHp")] Diemhp diem)
         {
-            if (id != diemhp.MaSv)
+            if (id != diem.MaSv)
             {
                 return NotFound();
             }
@@ -105,12 +106,12 @@ namespace WebQuanLySinhVien.Controllers
             {
                 try
                 {
-                    _context.Update(diemhp);
+                    _context.Update(diem);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DiemhpExists(diemhp.MaSv))
+                    if (!DiemhpExists(diem.MaSv))
                     {
                         return NotFound();
                     }
@@ -121,9 +122,9 @@ namespace WebQuanLySinhVien.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["MaHp"] = new SelectList(_context.Hocphans, "MaHp", "MaHp", diemhp.MaHp);
-            ViewData["MaSv"] = new SelectList(_context.SinhViens, "MaSv", "MaSv", diemhp.MaSv);
-            return View(diemhp);
+            ViewData["MaHp"] = new SelectList(_context.Hocphans, "MaHp", "MaHp", diem.MaHp);
+            ViewData["MaSv"] = new SelectList(_context.SinhViens, "MaSv", "MaSv", diem.MaSv);
+            return View(diem);
         }
 
         // GET: Diemhps/Delete/5

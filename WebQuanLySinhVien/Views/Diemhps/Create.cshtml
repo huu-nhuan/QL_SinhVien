@@ -36,6 +36,14 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+<script>
+    var errors = @Html.Raw(Json.Serialize(ViewData["Errors"]));
+
+    if (errors != null) {
+        console.log("Lỗi ModelState:", errors);
+    }
+</script>
+
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
