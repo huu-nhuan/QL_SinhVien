@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Bảng học phần</h1>
+<h1>Danh sách học phần</h1>
 
 <p>
-    <a asp-action="Create">Thêm mới</a>
+    <button class="btn btn-primary create-btn">Tạo mới</button>
 </p>
 <table class="table">
     <thead>
@@ -43,11 +43,44 @@
                 @Html.DisplayFor(modelItem => item.MaNganhNavigation.MaNganh)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.MaHp">Sửa</a> |
-                <a asp-action="Details" asp-route-id="@item.MaHp">Chi tiết</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaHp">Xóa</a>
+                    <button class="btn btn-primary edit-btn" data-id="@item.MaHp">Sửa</button>
+                    <button class="btn btn-primary"><a asp-action="Details" asp-route-id="@item.MaHp">Chi tiết</a></button>
+                    <button class="btn btn-danger delete-btn" data-id="@item.MaHp">Xóa</button>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<script>
+    $(document).ready(function() {
+        // Xử lý sửa
+        $('.edit-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/Hocphans/Edit/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Sửa thông tin');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý nút Create
+        $('.create-btn').click(function() {
+            $.get('/Hocphans/Create', function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Thêm mới');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý xóa
+        $('.delete-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/Hocphans/Delete/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Xác nhận xóa');
+                $('#actionModal').modal('show');
+            });
+        });
+    });
+</script>

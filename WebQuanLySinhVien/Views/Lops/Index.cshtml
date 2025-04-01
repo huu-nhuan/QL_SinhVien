@@ -7,7 +7,7 @@
 <h1>Danh sách lớp</h1>
 
 <p>
-    <a asp-action="Create">Tạo mới</a>
+    <button class="btn btn-primary create-btn">Tạo mới</button>
 </p>
 <table class="table">
     <thead>
@@ -21,7 +21,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.MaGvNavigation)
             </th>
-            <th></th>
+            <th>Hành động</th>
         </tr>
     </thead>
     <tbody>
@@ -37,11 +37,44 @@
                 @Html.DisplayFor(modelItem => item.MaGvNavigation.MaGv)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.MaLop">Sửa</a> |
-                <a asp-action="Details" asp-route-id="@item.MaLop">Chi tiết</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaLop">Xóa</a>
+                <button class="btn btn-primary edit-btn" data-id="@item.MaLop">Sửa</button>
+                <button class="btn btn-primary"><a asp-action="Details" asp-route-id="@item.MaLop">Chi tiết</a></button>
+                <button class="btn btn-danger delete-btn" data-id="@item.MaLop">Xóa</button>
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<script>
+    $(document).ready(function() {
+        // Xử lý sửa
+        $('.edit-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/Lops/Edit/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Sửa thông tin');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý nút Create
+        $('.create-btn').click(function() {
+            $.get('/Lops/Create', function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Thêm mới');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý xóa
+        $('.delete-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/Lops/Delete/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Xác nhận xóa');
+                $('#actionModal').modal('show');
+            });
+        });
+    });
+</script>

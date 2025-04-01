@@ -27,5 +27,5 @@ public partial class SinhVien
 
     public virtual Taikhoan? IdTkNavigation { get; set; }
 
-    public virtual Lop MaLopNavigation { get; set; } = null!;
+    public virtual Lop? MaLopNavigation { get; set; } 
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WebQuanLySinhVien.Models;
 
@@ -47,8 +48,8 @@ namespace WebQuanLySinhVien.Controllers
         // GET: Nganhs/Create
         public IActionResult Create()
         {
-            ViewData["MaKhoa"] = new SelectList(_context.Khoas, "MaKhoa", "MaKhoa");
-            return View();
+            ViewBag.MaKhoa = new SelectList(_context.Khoas, "MaKhoa", "MaKhoa");
+            return PartialView("_CreatePartial", new Nganh());
         }
 
         // POST: Nganhs/Create
@@ -58,23 +59,28 @@ namespace WebQuanLySinhVien.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaNganh,TenNganh,MaKhoa")] Nganh nganh)
         {
+            if(NganhExists(nganh.MaNganh))
+            {
+                return Json(new { success = false, message = "Mã ngành này đã tồn tại" });
+            }    
             if (ModelState.IsValid)
             {
 
                 _context.Add(nganh);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = true, message = "Thêm thành công" });
             }
-            string loi = "";
-            foreach (var state in ModelState)
-            {
-                foreach (var error in state.Value.Errors)
-                {
-                    // Log or inspect the error
-                    loi = loi + error.ErrorMessage + "\n" + nganh.MaKhoaNavigation;
-                }
-            }
-            return BadRequest(loi); 
+            return Json(new { success = false, message = "Thêm thất bại" });
+            //string loi = "";
+            //foreach (var state in ModelState)
+            //{
+            //    foreach (var error in state.Value.Errors)
+            //    {
+            //        // Log or inspect the error
+            //        loi = loi + error.ErrorMessage + "\n" + nganh.MaKhoaNavigation;
+            //    }
+            //}
+            //return BadRequest(loi); 
             //ViewData["MaKhoa"] = new SelectList(_context.Khoas, "MaKhoa", "MaKhoa", nganh.MaKhoa);
             //return View(nganh);
         }
@@ -92,8 +98,8 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return NotFound();
             }
-            ViewData["MaKhoa"] = new SelectList(_context.Khoas, "MaKhoa", "MaKhoa", nganh.MaKhoa);
-            return View(nganh);
+            ViewBag.MaKhoa = new SelectList(_context.Khoas, "MaKhoa", "MaKhoa", nganh.MaKhoa);
+            return PartialView("_EditPartial", nganh);
         }
 
         // POST: Nganhs/Edit/5
@@ -114,6 +120,7 @@ namespace WebQuanLySinhVien.Controllers
                 {
                     _context.Update(nganh);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Cập nhật thành công" });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -126,10 +133,8 @@ namespace WebQuanLySinhVien.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["MaKhoa"] = new SelectList(_context.Khoas, "MaKhoa", "MaKhoa", nganh.MaKhoa);
-            return View(nganh);
+            return Json(new { success = false, message = "Cập nhật thất bại" });
         }
 
         // GET: Nganhs/Delete/5
@@ -148,7 +153,7 @@ namespace WebQuanLySinhVien.Controllers
                 return NotFound();
             }
 
-            return View(nganh);
+            return PartialView("_DeletePartial", nganh);
         }
 
         // POST: Nganhs/Delete/5
@@ -157,18 +162,35 @@ namespace WebQuanLySinhVien.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var nganh = await _context.Nganhs.FindAsync(id);
-            if (nganh != null)
+            if (nganh == null)
             {
-                _context.Nganhs.Remove(nganh);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.Nganhs.Remove(nganh);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Xóa thành công" });
+            }
+            catch (DbUpdateException ex) when (IsForeignKeyViolation(ex))
+            {
+                return Json(new { success = false, message = "Không thể xóa được vì dữ liệu đang được sử dụng ở bảng khác" });
+            }
+            catch (DbUpdateException ex)
+            {
+                return Json(new { success = false, message = $"Lỗi cơ sở dữ liệu: {ex.Message}" });
+            }
         }
 
         private bool NganhExists(string id)
         {
             return _context.Nganhs.Any(e => e.MaNganh == id);
+        }
+        private bool IsForeignKeyViolation(DbUpdateException ex)
+        {
+            return ex.InnerException is SqlException sqlEx &&
+                   (sqlEx.Number == 547 || sqlEx.Message.Contains("FOREIGN KEY"));
         }
     }
 }

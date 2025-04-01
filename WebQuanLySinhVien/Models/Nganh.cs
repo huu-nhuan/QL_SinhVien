@@ -13,5 +13,5 @@ public partial class Nganh
 
     public virtual ICollection<Hocphan> Hocphans { get; set; } = new List<Hocphan>();
 
-    public virtual Khoa MaKhoaNavigation { get; set; } = null!;
+    public virtual Khoa? MaKhoaNavigation { get; set; }
 }

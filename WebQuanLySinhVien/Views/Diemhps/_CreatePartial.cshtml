@@ -1,0 +1,52 @@
+﻿@model WebQuanLySinhVien.Models.Diemhp
+@{
+    Layout = null;
+}
+<h4>Điểm</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="createForm" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MaSv" class="control-label"></label>
+                <select asp-for="MaSv" class="form-control" asp-items="ViewBag.MaSv"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaHp" class="control-label"></label>
+                <select asp-for="MaHp" class="form-control" asp-items="ViewBag.MaHp"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiemHp" class="control-label"></label>
+                <input asp-for="DiemHp" min="0" max="10" class="form-control" />
+                <span asp-validation-for="DiemHp" class="text-danger"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Xử lý submit form bằng AJAX
+    $('#createForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(response) {
+            if (response.success) {
+                $('#actionModal').modal('hide');
+                swal("Thành công", response.message, "success")
+                    .then(() => location.reload()); // Reload trang sau khi tạo
+            }
+            else {
+                swal({
+                    title: "Lỗi!",
+                    text: response.message,
+                    icon: "error"
+                })
+                //$('#modalBody').html(response); // Hiển thị lại form nếu có lỗi
+            }
+        });
+    });
+</script>

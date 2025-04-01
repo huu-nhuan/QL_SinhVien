@@ -1,0 +1,110 @@
+﻿@model WebQuanLySinhVien.Models.SinhVien
+@{
+    Layout = null;
+}
+<h4>Sinh viên</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="createForm" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="MaSv" class="control-label"></label>
+                        <input asp-for="MaSv" class="form-control" />
+                        <span asp-validation-for="MaSv" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="MaLop" class="control-label"></label>
+                        <select asp-for="MaLop" class="form-control" asp-items="ViewBag.MaLop"></select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="HoTen" class="control-label"></label>
+                <input asp-for="HoTen" class="form-control" />
+                <span asp-validation-for="HoTen" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GioiTinh" class="control-label"></label>
+                <div class="form-check form-check-radio">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="GioiTinh" type="radio" value="Nam" /> Nam
+                    </label>
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="GioiTinh" type="radio" value="Nữ" /> Nữ
+                    </label>
+                </div>
+                <span asp-validation-for="GioiTinh" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="NgaySinh" class="control-label"></label>
+                        <input asp-for="NgaySinh" type="date" class="form-control" />
+                        <span asp-validation-for="NgaySinh" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Sdt" class="control-label"></label>
+                        <input asp-for="Sdt" class="form-control" />
+                        <span asp-validation-for="Sdt" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="DiaChi" class="control-label"></label>
+                <input asp-for="DiaChi" class="form-control" />
+                <span asp-validation-for="DiaChi" class="text-danger"></span>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label asp-for="IdTk" class="control-label"></label>
+                        <select asp-for="IdTk" class="form-control" asp-items="@(new SelectList(ViewBag.IdTk, "Value", "Text", null))">
+                            <option value="">Chọn một giá trị</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Xử lý submit form bằng AJAX
+    $('#createForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(response) {
+            if (response.success) {
+                $('#actionModal').modal('hide');
+                swal("Thành công", response.message, "success")
+                    .then(() => location.reload()); // Reload trang sau khi tạo
+            }
+            else {
+                swal({
+                    title: "Lỗi!",
+                    text: response.message,
+                    icon: "error"
+                })
+                //$('#modalBody').html(response); // Hiển thị lại form nếu có lỗi
+            }
+        });
+    });
+</script>

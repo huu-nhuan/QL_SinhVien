@@ -1,0 +1,60 @@
+﻿@model WebQuanLySinhVien.Models.Lop
+@{
+    Layout = null;
+}
+<h4>Lớp</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="editForm" asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaLop" />
+            <div class="form-group">
+                <label asp-for="TenLop" class="control-label"></label>
+                <input asp-for="TenLop" class="form-control" />
+                <span asp-validation-for="TenLop" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaGv" class="control-label"></label>
+                <select asp-for="MaGv" class="form-control" asp-items="ViewBag.MaGv"></select>
+                <span asp-validation-for="MaGv" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NamNhapHoc" class="control-label"></label>
+                <input asp-for="NamNhapHoc" class="form-control" />
+                <span asp-validation-for="NamNhapHoc" class="text-danger"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#editForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+                //location.reload();
+            } else {
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"
+                })
+                //$('#modalBody').html(data);
+            }
+        });
+    });
+</script>
+

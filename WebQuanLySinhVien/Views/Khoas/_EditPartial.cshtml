@@ -1,0 +1,50 @@
+﻿@model WebQuanLySinhVien.Models.Khoa
+@{
+    Layout = null;
+}
+<h4>Khoa</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit" id="editForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaKhoa" />
+            <div class="form-group">
+                <label asp-for="TenKhoa" class="control-label"></label>
+                <input asp-for="TenKhoa" class="form-control" />
+                <span asp-validation-for="TenKhoa" class="text-danger"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    $('#editForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+                //location.reload();
+            } else {
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"
+                })
+                //$('#modalBody').html(data);
+            }
+        });
+    });
+</script>
+

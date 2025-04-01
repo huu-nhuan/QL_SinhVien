@@ -1,0 +1,56 @@
+﻿@model WebQuanLySinhVien.Models.Nganh
+@{
+    Layout = null;
+}
+<h3>Bạn có chắc muốn xóa?</h3>
+<div>
+    <h4>Ngành</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.TenNganh)
+        </dt>
+        <dd class="col-sm-8">
+            @(Model.TenNganh != null ? Html.DisplayFor(model => model.TenNganh) : "Không xác định")
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.MaKhoaNavigation)
+        </dt>
+        <dd class="col-sm-8">
+            @(Model.MaKhoaNavigation != null ? Html.DisplayFor(model => model.MaKhoaNavigation.MaKhoa) : "Không xác định")
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" id="deleteForm">
+        <input type="hidden" asp-for="MaNganh" />
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-danger">Xác nhận</button>
+        </div>
+    </form>
+</div>
+<script>
+    $('#deleteForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+                //location.reload(); // hoặc xóa dòng khỏi bảng
+            } else{
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"
+                })
+
+            }
+        });
+    });
+</script>

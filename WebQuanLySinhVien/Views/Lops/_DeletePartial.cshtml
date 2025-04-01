@@ -1,0 +1,62 @@
+﻿@model WebQuanLySinhVien.Models.Lop
+@{
+    Layout = null;
+}
+<h3>Bạn có chắc muốn xóa?</h3>
+<div>
+    <h4>Lớp</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.TenLop)
+        </dt>
+        <dd class="col-sm-8">
+            @(Model.TenLop != null ? Html.DisplayFor(model => model.TenLop) : "Không xác định")
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.NamNhapHoc)
+        </dt>
+        <dd class="col-sm-8">
+            @(Model.NamNhapHoc != null ? Html.DisplayFor(model => model.NamNhapHoc) : "Không xác định")
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.MaGvNavigation)
+        </dt>
+        <dd class="col-sm-8">
+            @(Model.MaGvNavigation != null ? Html.DisplayFor(model => model.MaGvNavigation.MaGv) : "Không xác định")
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" id="deleteForm">
+        <input type="hidden" asp-for="MaLop" />
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-danger">Xác nhận</button>
+        </div>
+    </form>
+</div>
+<script>
+    $('#deleteForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+                //location.reload(); // hoặc xóa dòng khỏi bảng
+            } else{
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"
+                })
+
+            }
+        });
+    });
+</script>

@@ -13,7 +13,7 @@ public partial class Lop
 
     public string? NamNhapHoc { get; set; }
 
-    public virtual GiangVien MaGvNavigation { get; set; } = null!;
+    public virtual GiangVien? MaGvNavigation { get; set; }
 
     public virtual ICollection<SinhVien> SinhViens { get; set; } = new List<SinhVien>();
 }

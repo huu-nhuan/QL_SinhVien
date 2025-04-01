@@ -1,0 +1,64 @@
+﻿@model WebQuanLySinhVien.Models.Diemhp
+@{
+    Layout = null;
+}
+<h3>Bạn có chắc muốn xóa?</h3>
+<div>
+    <h4>Điểm</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DiemHp)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DiemHp)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MaHpNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MaHpNavigation.MaHp)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MaSvNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.MaSvNavigation.MaSv)
+        </dd>
+    </dl>
+
+    <form id="deleteForm" asp-action="Delete">
+        <input type="hidden" asp-for="MaSv" />
+        <input type="hidden" asp-for="MaHp" />
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-danger">Xác nhận</button>
+        </div>
+    </form>
+</div>
+<script>
+    $('#deleteForm').submit(function(e) {
+        e.preventDefault();
+        var r = $(this).attr('action') + "?id1=@Model.MaSv&id2=@Model.MaHp";
+        $.post(r, $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+
+            } else{
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"
+                })
+
+            }
+        });
+    });
+</script>

@@ -44,7 +44,7 @@
     @* <link href="../../template/assets/css/font-awesome.min.css" rel="stylesheet"> *@
     @* <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"> *@
     <link href="../../template/assets/css/all.min.css" rel="stylesheet" />
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="../../template/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
 
 </head>
@@ -252,6 +252,7 @@
         <div class="content">
             <div class="container-fluid">
                     @RenderBody()
+                    
             </div>
         </div>
 
@@ -291,6 +292,22 @@
     </div>
 </div>
     @await RenderSectionAsync("Scripts", required: false)
+
+    <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span inert>&times;</span>
+                    </button>
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Thao tác</h5>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Nội dung form sẽ được load vào đây -->
+                </div>
+            </div>
+        </div>
+    </div>
 
 </body>
 

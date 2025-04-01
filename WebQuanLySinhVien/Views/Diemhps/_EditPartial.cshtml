@@ -1,0 +1,55 @@
+﻿@model WebQuanLySinhVien.Models.Diemhp
+@{
+    Layout = null;
+}
+<h4>Điểm</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="editForm" asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaSv" />
+            <input type="hidden" asp-for="MaHp" />
+            <div class="form-group">
+                <label asp-for="DiemHp" class="control-label"></label>
+                <input asp-for="DiemHp" min="0" max="10" class="form-control" />
+                <span asp-validation-for="DiemHp" class="text-danger"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $('#editForm').submit(function(e) {
+        e.preventDefault();
+        console.log($(this).attr('action'));
+        var r = $(this).attr('action') + "?id1=@Model.MaSv&id2=@Model.MaHp";
+        console.log(r);
+        //$.post($(this).attr('action'), $(this).serialize(), function(data) {
+        $.post(r, $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+                //location.reload();
+            } else {
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"   
+                })
+                console.log(data);
+                //$('#modalBody').html(data);
+            }
+        });
+    });
+</script>
+

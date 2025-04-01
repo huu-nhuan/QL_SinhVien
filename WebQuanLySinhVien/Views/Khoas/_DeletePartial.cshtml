@@ -1,0 +1,50 @@
+﻿@model WebQuanLySinhVien.Models.Khoa
+@{
+    Layout = null;
+}
+<h3>Bạn có chắc muốn xóa?</h3>
+<div>
+    <h4>Khoa</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TenKhoa)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TenKhoa)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" id="deleteForm">
+        <input type="hidden" asp-for="MaKhoa" />
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-danger">Xác nhận</button>
+        </div>
+    </form>
+</div>
+<script>
+    $('#deleteForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+                //location.reload(); // hoặc xóa dòng khỏi bảng
+            } else{
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"
+                })
+
+            }
+        });
+    });
+</script>

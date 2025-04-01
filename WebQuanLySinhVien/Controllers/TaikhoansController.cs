@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WebQuanLySinhVien.Models;
 
@@ -45,7 +46,7 @@ namespace WebQuanLySinhVien.Controllers
         // GET: Taikhoans/Create
         public IActionResult Create()
         {
-            return View();
+            return PartialView("_CreatePartial", new Taikhoan());
         }
 
         // POST: Taikhoans/Create
@@ -55,13 +56,39 @@ namespace WebQuanLySinhVien.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("IdTk,TenDangNhap,MatKhau,VaiTro")] Taikhoan taikhoan)
         {
+            if (TaikhoanExists(taikhoan.TenDangNhap))
+            {
+                return Json(new { success = false, message = "Tên đăng nhập này đã tồn tại" });
+            }
             if (ModelState.IsValid)
             {
-                _context.Add(taikhoan);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(taikhoan);
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Thêm thành công" });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                    return Json(new { success = false, message = $"Error: {ex.Message}" });
+                }
             }
-            return View(taikhoan);
+            if (!ModelState.IsValid)
+            {
+                var errorList = ModelState
+                    .Where(ms => ms.Value.Errors.Any())
+                    .Select(ms => new
+                    {
+                        Key = ms.Key,
+                        Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                    })
+                    .ToList();
+
+                ViewBag.Errors = Newtonsoft.Json.JsonConvert.SerializeObject(errorList);
+                return Json(new { success = false, message = Newtonsoft.Json.JsonConvert.SerializeObject(errorList) });
+            }
+            return Json(new { success = false, message = "Thêm thất bại" });
         }
 
         // GET: Taikhoans/Edit/5
@@ -77,7 +104,7 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return NotFound();
             }
-            return View(taikhoan);
+            return PartialView("_EditPartial", taikhoan);
         }
 
         // POST: Taikhoans/Edit/5
@@ -91,17 +118,21 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return NotFound();
             }
-
+            if (TaikhoanExists(taikhoan.TenDangNhap))
+            {
+                return Json(new { success = false, message = "Tên đăng nhập này đã tồn tại" });
+            }
             if (ModelState.IsValid)
             {
                 try
                 {
                     _context.Update(taikhoan);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Cập nhật thành công" });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TaikhoanExists(taikhoan.IdTk))
+                    if (!IdExists(taikhoan.IdTk))
                     {
                         return NotFound();
                     }
@@ -110,9 +141,8 @@ namespace WebQuanLySinhVien.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(taikhoan);
+            return Json(new { success = false, message = "Cập nhật thất bại" });
         }
 
         // GET: Taikhoans/Delete/5
@@ -130,7 +160,7 @@ namespace WebQuanLySinhVien.Controllers
                 return NotFound();
             }
 
-            return View(taikhoan);
+            return PartialView("_DeletePartial", taikhoan);
         }
 
         // POST: Taikhoans/Delete/5
@@ -139,18 +169,39 @@ namespace WebQuanLySinhVien.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var taikhoan = await _context.Taikhoans.FindAsync(id);
-            if (taikhoan != null)
+            if (taikhoan == null)
+            {
+                return NotFound();
+            }
+            try
             {
                 _context.Taikhoans.Remove(taikhoan);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Xóa thành công" });
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (DbUpdateException ex) when (IsForeignKeyViolation(ex))
+            {
+                return Json(new { success = false, message = "Không thể xóa được vì dữ liệu đang được sử dụng ở bảng khác" });
+            }
+            catch (DbUpdateException ex)
+            {
+                return Json(new { success = false, message = $"Lỗi cơ sở dữ liệu: {ex.Message}" });
+            }
         }
 
-        private bool TaikhoanExists(int id)
+        private bool TaikhoanExists(string tdn)
+        {
+            return _context.Taikhoans.Any(e => e.TenDangNhap == tdn);
+        }
+
+        private bool IdExists(int id)
         {
             return _context.Taikhoans.Any(e => e.IdTk == id);
+        }
+        private bool IsForeignKeyViolation(DbUpdateException ex)
+        {
+            return ex.InnerException is SqlException sqlEx &&
+                   (sqlEx.Number == 547 || sqlEx.Message.Contains("FOREIGN KEY"));
         }
     }
 }

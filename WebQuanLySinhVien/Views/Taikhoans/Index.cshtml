@@ -7,7 +7,7 @@
 <h1>Danh sách tài khoản</h1>
 
 <p>
-    <a asp-action="Create">Tạo mới</a>
+    <button class="btn btn-primary create-btn">Tạo mới</button>
 </p>
 <table class="table">
     <thead>
@@ -58,12 +58,45 @@
                     @Html.DisplayFor(modelItem => item.VaiTro)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.IdTk">Sửa</a> |
-                    <a asp-action="Details" asp-route-id="@item.IdTk">Chi tiết</a> |
-                    <a asp-action="Delete" asp-route-id="@item.IdTk">Xóa</a>
+                    <button class="btn btn-primary edit-btn" data-id="@item.IdTk">Sửa</button>
+                    <button class="btn btn-primary"><a asp-action="Details" asp-route-id="@item.IdTk">Chi tiết</a></button>
+                    <button class="btn btn-danger delete-btn" data-id="@item.IdTk">Xóa</button>
                 </td>
             </tr>
         }
 
     </tbody>
 </table>
+
+<script>
+    $(document).ready(function() {
+        // Xử lý sửa
+        $('.edit-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/Taikhoans/Edit/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Sửa thông tin');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý nút Create
+        $('.create-btn').click(function() {
+            $.get('/Taikhoans/Create', function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Thêm mới');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý xóa
+        $('.delete-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/Taikhoans/Delete/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Xác nhận xóa');
+                $('#actionModal').modal('show');
+            });
+        });
+    });
+</script>

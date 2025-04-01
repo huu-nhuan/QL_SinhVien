@@ -1,0 +1,60 @@
+﻿@model WebQuanLySinhVien.Models.Taikhoan
+@{
+    Layout = null;
+}
+<h1>Tạo mới</h1>
+
+<h4>Tài khoản</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="createForm" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @*             <div class="form-group">
+                <label asp-for="IdTk" class="control-label"></label>
+                <input asp-for="IdTk" class="form-control" />
+                <span asp-validation-for="IdTk" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="TenDangNhap" class="control-label"></label>
+                <input asp-for="TenDangNhap" class="form-control" />
+                <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MatKhau" class="control-label"></label>
+                <input asp-for="MatKhau" class="form-control" />
+                <span asp-validation-for="MatKhau" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VaiTro" class="control-label"></label>
+                <input asp-for="VaiTro" min="1" max="3" class="form-control" />
+                <span asp-validation-for="VaiTro" class="text-danger"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Xử lý submit form bằng AJAX
+    $('#createForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(response) {
+            if (response.success) {
+                $('#actionModal').modal('hide');
+                swal("Thành công", response.message, "success")
+                    .then(() => location.reload()); // Reload trang sau khi tạo
+            } else {
+                swal({
+                    title: "Lỗi!",
+                    text: response.message,
+                    icon: "error"
+                })
+                //$('#modalBody').html(response); // Hiển thị lại form nếu có lỗi
+            }
+        });
+    });
+</script>

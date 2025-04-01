@@ -1,0 +1,64 @@
+﻿@model WebQuanLySinhVien.Models.Hocphan
+@{
+    Layout = null;
+}
+<h4>Học phần</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="editForm" asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaHp" />
+            <div class="form-group">
+                <label asp-for="TenHp" class="control-label"></label>
+                <input asp-for="TenHp" class="form-control" />
+                <span asp-validation-for="TenHp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SoTc" class="control-label"></label>
+                <input asp-for="SoTc" class="form-control" />
+                <span asp-validation-for="SoTc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaNganh" class="control-label"></label>
+                <select asp-for="MaNganh" class="form-control" asp-items="ViewBag.MaNganh"></select>
+                <span asp-validation-for="MaNganh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HocKy" class="control-label"></label>
+                <input asp-for="HocKy" type="number" min="1" class="form-control" />
+                <span asp-validation-for="HocKy" class="text-danger"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $('#editForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+                //location.reload();
+            } else {
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"
+                })
+                //$('#modalBody').html(data);
+            }
+        });
+    });
+</script>
+

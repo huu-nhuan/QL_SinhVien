@@ -4,10 +4,10 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Bảng điểm</h1>
+<h1>Danh sách điểm</h1>
 
 <p>
-    <a asp-action="Create">Tạo mới</a>
+    <button class="btn btn-primary create-btn">Tạo mới</button>
 </p>
 <table class="table">
     <thead>
@@ -37,11 +37,46 @@
                 @Html.DisplayFor(modelItem => item.MaSvNavigation.MaSv)
             </td>
             <td>
-                @Html.ActionLink("Sửa", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Chi tiết", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Xóa", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
+                <button class="btn btn-primary edit-btn" data-id1="@item.MaSv" data-id2="@item.MaHp">Sửa</button>
+                <button class="btn btn-primary"><a asp-action="Details" asp-route-id="@item.MaSv">Chi tiết</a></button>
+                <button class="btn btn-danger delete-btn" data-id1="@item.MaSv" data-id2="@item.MaHp">Xóa</button>
+        </td>
         </tr>
 }
     </tbody>
 </table>
+
+<script>
+    $(document).ready(function() {
+        // Xử lý sửa
+        $('.edit-btn').click(function() {
+            var id1 = $(this).data('id1'); // Lấy giá trị của khóa ngoại thứ nhất
+            var id2 = $(this).data('id2'); // Lấy giá trị của khóa ngoại thứ hai
+            $.get(`/Diemhps/Edit?id1=${id1}&id2=${id2}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Sửa thông tin');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý nút Create
+        $('.create-btn').click(function() {
+            $.get('/Diemhps/Create', function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Thêm mới');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý xóa
+        $('.delete-btn').click(function() {
+            var id1 = $(this).data('id1'); // Lấy giá trị của khóa ngoại thứ nhất
+            var id2 = $(this).data('id2'); // Lấy giá trị của khóa ngoại thứ hai
+            $.get(`/Diemhps/Delete?id1=${id1}&id2=${id2}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Xác nhận xóa');
+                $('#actionModal').modal('show');
+            });
+        });
+    });
+</script>

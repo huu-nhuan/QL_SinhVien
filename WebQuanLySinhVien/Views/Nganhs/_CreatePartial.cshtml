@@ -1,0 +1,54 @@
+﻿@model WebQuanLySinhVien.Models.Nganh
+@{
+    Layout = null;
+}
+<h1>Tạo mới</h1>
+
+<h4>Ngành</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="createForm" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MaNganh" class="control-label"></label>
+                <input asp-for="MaNganh" class="form-control" />
+                <span asp-validation-for="MaNganh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TenNganh" class="control-label"></label>
+                <input asp-for="TenNganh" class="form-control" />
+                <span asp-validation-for="TenNganh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MaKhoa" class="control-label"></label>
+                <select asp-for="MaKhoa" class="form-control" asp-items="ViewBag.MaKhoa"></select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Xử lý submit form bằng AJAX
+    $('#createForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(response) {
+            if (response.success) {
+                $('#actionModal').modal('hide');
+                swal("Thành công", response.message, "success")
+                    .then(() => location.reload()); // Reload trang sau khi tạo
+            } else {
+                swal({
+                    title: "Lỗi!",
+                    text: response.message,
+                    icon: "error"
+                })
+                //$('#modalBody').html(response); // Hiển thị lại form nếu có lỗi
+            }
+        });
+    });
+</script>

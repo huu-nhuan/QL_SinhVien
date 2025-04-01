@@ -11,7 +11,7 @@ public partial class Diemhp
 
     public int? DiemHp { get; set; }
 
-    public virtual Hocphan MaHpNavigation { get; set; } = null!;
+    public virtual Hocphan? MaHpNavigation { get; set; }
 
-    public virtual SinhVien MaSvNavigation { get; set; } = null!;
+    public virtual SinhVien? MaSvNavigation { get; set; }
 }

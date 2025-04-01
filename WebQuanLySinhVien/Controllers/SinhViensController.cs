@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WebQuanLySinhVien.Models;
 
@@ -48,9 +49,13 @@ namespace WebQuanLySinhVien.Controllers
         // GET: SinhViens/Create
         public IActionResult Create()
         {
-            ViewData["IdTk"] = new SelectList(_context.Taikhoans, "IdTk", "IdTk");
-            ViewData["MaLop"] = new SelectList(_context.Lops, "MaLop", "MaLop");
-            return View();
+            //var tk = _context.Taikhoans;
+            //var tk = _context.Taikhoans.Where(t1 => !_context.SinhViens.Select(t2 => t2.IdTk).Contains(t1.IdTk)
+            //&& !_context.GiangViens.Select(t3 => t3.IdTk).Contains(t1.IdTk)).Select(i => i.IdTk);
+            ViewBag.IdTk = new SelectList(_context.Taikhoans.Where(t1 => !_context.SinhViens.Select(t2 => t2.IdTk).Contains(t1.IdTk)
+            && !_context.GiangViens.Select(t3 => t3.IdTk).Contains(t1.IdTk)), "IdTk", "IdTk");
+            ViewBag.MaLop = new SelectList(_context.Lops, "MaLop", "MaLop");
+            return PartialView("_CreatePartial", new SinhVien());
         }
 
         // POST: SinhViens/Create
@@ -60,15 +65,40 @@ namespace WebQuanLySinhVien.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaSv,MaLop,HoTen,GioiTinh,NgaySinh,Sdt,DiaChi,IdTk,Email")] SinhVien sinhVien)
         {
+            if (SinhVienExist(sinhVien.MaSv))
+            {
+                return Json(new { success = false, message = "Mã sinh viên này đã tồn tại" });
+            }
             if (ModelState.IsValid)
             {
-                _context.Add(sinhVien);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(sinhVien);
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Thêm thành công" });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                    return Json(new { success = false, message = $"Error: {ex.Message}" });
+                }
+
             }
-            ViewData["IdTk"] = new SelectList(_context.Taikhoans, "IdTk", "IdTk", sinhVien.IdTk);
-            ViewData["MaLop"] = new SelectList(_context.Lops, "MaLop", "MaLop", sinhVien.MaLop);
-            return View(sinhVien);
+            if (!ModelState.IsValid)
+            {
+                var errorList = ModelState
+                    .Where(ms => ms.Value.Errors.Any())
+                    .Select(ms => new
+                    {
+                        Key = ms.Key,
+                        Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                    })
+                    .ToList();
+
+                ViewBag.Errors = Newtonsoft.Json.JsonConvert.SerializeObject(errorList);
+                return Json(new { success = false, message = Newtonsoft.Json.JsonConvert.SerializeObject(errorList) });
+            }
+            return Json(new { success = false, message = "Thêm thất bại" });
         }
 
         // GET: SinhViens/Edit/5
@@ -84,9 +114,26 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return NotFound();
             }
-            ViewData["IdTk"] = new SelectList(_context.Taikhoans, "IdTk", "IdTk", sinhVien.IdTk);
-            ViewData["MaLop"] = new SelectList(_context.Lops, "MaLop", "MaLop", sinhVien.MaLop);
-            return View(sinhVien);
+            //var tk = _context.Taikhoans.Where(t1 => !_context.SinhViens.Select(t2 => t2.IdTk).Contains(t1.IdTk)
+            //&& !_context.GiangViens.Select(t3 => t3.IdTk).Contains(t1.IdTk));
+            //ViewBag.IdTk = new SelectList(_context.Taikhoans.Where(t1 => !_context.SinhViens.Select(t2 => t2.IdTk).Contains(t1.IdTk)
+            //&& !_context.GiangViens.Select(t3 => t3.IdTk).Contains(t1.IdTk)), "IdTk", "IdTk", sinhVien.IdTk);
+            var taikhoans = _context.Taikhoans
+            .Where(t1 => !_context.SinhViens.Select(t2 => t2.IdTk).Contains(t1.IdTk)
+              && !_context.GiangViens.Select(t3 => t3.IdTk).Contains(t1.IdTk))
+            .ToList(); // Chuyển thành danh sách để có thể thêm phần tử mới
+
+            // Kiểm tra nếu sinhVien.IdTk khác null và chưa có trong danh sách, thì thêm vào
+            if (sinhVien.IdTk.HasValue && !taikhoans.Any(t => t.IdTk == sinhVien.IdTk.Value))
+            {
+                taikhoans.Add(new Taikhoan { IdTk = sinhVien.IdTk.Value });
+            }
+
+            // Tạo SelectList với danh sách đã sửa đổi
+            ViewBag.IdTk = new SelectList(taikhoans, "IdTk", "IdTk", sinhVien.IdTk);
+
+            ViewBag.MaLop = new SelectList(_context.Lops, "MaLop", "MaLop", sinhVien.MaLop);
+            return PartialView("_EditPartial", sinhVien);
         }
 
         // POST: SinhViens/Edit/5
@@ -107,10 +154,11 @@ namespace WebQuanLySinhVien.Controllers
                 {
                     _context.Update(sinhVien);
                     await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Cập nhật thành công" });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SinhVienExists(sinhVien.MaSv))
+                    if (!SinhVienExist(sinhVien.MaSv))
                     {
                         return NotFound();
                     }
@@ -119,11 +167,8 @@ namespace WebQuanLySinhVien.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
-            ViewData["IdTk"] = new SelectList(_context.Taikhoans, "IdTk", "IdTk", sinhVien.IdTk);
-            ViewData["MaLop"] = new SelectList(_context.Lops, "MaLop", "MaLop", sinhVien.MaLop);
-            return View(sinhVien);
+            return Json(new { success = false, message = "Cập nhật thất bại" });
         }
 
         // GET: SinhViens/Delete/5
@@ -143,7 +188,7 @@ namespace WebQuanLySinhVien.Controllers
                 return NotFound();
             }
 
-            return View(sinhVien);
+            return PartialView("_DeletePartial", sinhVien);
         }
 
         // POST: SinhViens/Delete/5
@@ -152,18 +197,35 @@ namespace WebQuanLySinhVien.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var sinhVien = await _context.SinhViens.FindAsync(id);
-            if (sinhVien != null)
+            if (sinhVien == null)
             {
-                _context.SinhViens.Remove(sinhVien);
+                return NotFound();
             }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _context.SinhViens.Remove(sinhVien);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Xóa thành công" });
+            }
+            catch (DbUpdateException ex) when (IsForeignKeyViolation(ex))
+            {
+                return Json(new { success = false, message = "Không thể xóa được vì dữ liệu đang được sử dụng ở bảng khác" });
+            }
+            catch (DbUpdateException ex)
+            {
+                return Json(new { success = false, message = $"Lỗi cơ sở dữ liệu: {ex.Message}" });
+            }
         }
 
-        private bool SinhVienExists(string id)
+        private bool SinhVienExist(string id)
         {
             return _context.SinhViens.Any(e => e.MaSv == id);
+        }
+        private bool IsForeignKeyViolation(DbUpdateException ex)
+        {
+            return ex.InnerException is SqlException sqlEx &&
+                   (sqlEx.Number == 547 || sqlEx.Message.Contains("FOREIGN KEY"));
         }
     }
 }
