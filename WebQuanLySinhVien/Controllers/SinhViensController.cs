@@ -20,9 +20,28 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: SinhViens
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string searchBy)
         {
             var quanLySinhVienContext = _context.SinhViens.Include(s => s.IdTkNavigation).Include(s => s.MaLopNavigation);
+
+            if(!String.IsNullOrEmpty(searchString))
+            {
+                if(searchBy == "ten")
+                {
+                    var sv = await quanLySinhVienContext.Where(s => s.HoTen.Contains(searchString)).ToListAsync();
+                    ViewData["searchString"] = searchString;
+                    ViewData["searchBy"] = searchBy;
+                    return View(sv);
+                }
+                else
+                {
+                    var sv = await quanLySinhVienContext.Where(s => s.GioiTinh.Contains(searchString)).ToListAsync();
+                    ViewData["searchString"] = searchString;
+                    ViewData["searchBy"] = searchBy;
+                    return View(sv);
+                }
+                
+            }    
             return View(await quanLySinhVienContext.ToListAsync());
         }
 
@@ -216,6 +235,44 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return Json(new { success = false, message = $"Lỗi cơ sở dữ liệu: {ex.Message}" });
             }
+        }
+
+        public async Task<IActionResult> QuanLy(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var sinhVien = await _context.SinhViens
+                .Include(s => s.IdTkNavigation)
+                .Include(s => s.MaLopNavigation)
+                .FirstOrDefaultAsync(m => m.MaSv == id);
+            if (sinhVien == null)
+            {
+                return NotFound();
+            }
+
+            return View(sinhVien);
+        }
+        public async Task<IActionResult> DSHocPhan(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var dshp = await _context.Diemhps
+                .Include(s => s.MaSvNavigation)
+                .Include(s => s.MaHpNavigation)
+                .Where(m => m.MaSv == id).ToListAsync();
+            if (dshp == null)
+            {
+                return NotFound();
+            }
+            ViewData["hoten"] = _context.SinhViens.Where(s => s.MaSv == id).Select(s => s.HoTen).FirstOrDefault();
+            ViewData["masv"] = id;
+            return View(dshp);
         }
 
         private bool SinhVienExist(string id)

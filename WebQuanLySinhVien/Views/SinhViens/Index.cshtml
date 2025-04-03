@@ -9,6 +9,39 @@
 <p>
     <button class="btn btn-primary create-btn">Tạo mới</button>
 </p>
+<div class="row">
+    <div class="col-md-6">
+        <form class="d-flex align-items-center" asp-action="Index" asp-controller="SinhViens">
+            <div class="form-check form-check-radio">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="searchBy" value="ten"
+                    @(ViewData["searchBy"]?.ToString() == "ten" || string.IsNullOrEmpty(ViewData["searchBy"]?.ToString()) ? "checked" : "")>
+                    <span class="form-check-sign"></span>
+                    Tìm theo tên
+                </label>
+            </div>
+            <div class="form-check form-check-radio">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="searchBy" value="gt"
+                    @(ViewData["searchBy"]?.ToString() == "gt" ? "checked" : "")>
+                    <span class="form-check-sign"></span>
+                    Tìm theo giới tính
+                </label>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <input name="searchString" class="form-control me-1" type="search" placeholder="Tìm kiếm" aria-label="Tìm kiếm" value="@ViewData["searchString"]" />
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                </div>
+            </div> 
+        </form>
+    </div>
+    <div class="col-md-6">
+        <a asp-action="Index" asp-controller="SinhViens">Trở về danh sách đầy đủ</a>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -68,7 +101,7 @@
             </td>
             <td>
                 <button class="btn btn-primary edit-btn" data-id="@item.MaSv">Sửa</button>
-                <button class="btn btn-primary"><a asp-action="Details" asp-route-id="@item.MaSv">Chi tiết</a></button>
+                <button class="btn btn-primary"><a asp-action="QuanLy" asp-route-id="@item.MaSv">Quản lý</a></button>
                 <button class="btn btn-danger delete-btn" data-id="@item.MaSv">Xóa</button>
             </td>
         </tr>

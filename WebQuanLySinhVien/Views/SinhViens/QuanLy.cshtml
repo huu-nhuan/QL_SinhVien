@@ -1,0 +1,71 @@
+﻿@model WebQuanLySinhVien.Models.SinhVien
+
+@{
+    ViewData["Title"] = "Quản lý";
+}
+<h1>Quản lý sinh viên</h1>
+<a asp-action="Index" asp-controller="SinhViens">Trở về danh sách đầy đủ</a>
+<div class="col-md-12">
+    <h4 class="card-title">@Model.HoTen</h4>
+    <p class="card-category">Mã số sinh viên: @Model.MaSv</p>
+
+    <div class="card-body table-full-width table-responsive">
+        <table class="table table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Quản lý thông tin cá nhân</td>
+                    <td><button class="btn btn-primary go-to-profile" data-id="@Model?.MaSv">Đến</button></td>
+                </tr>
+                <tr>
+                    <td>Quản lý học phần</td>
+                    <td><button class="btn btn-primary go-to-dshocphan" data-id="@Model?.MaSv">Đến</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@* <table class="table">
+    <thead>
+        <tr>
+            @* <th>
+                @Html.DisplayNameFor(model => model.HoTen)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.GioiTinh)
+            </th> 
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Quản lý thông tin cá nhân</td>
+            <td><button class="btn btn-primary go-to-profile" data-id="@Model?.MaSv">Đến</button></td>
+        </tr>
+        <tr>
+            <td>Quản lý thông tin cá nhân</td>
+            <td><button class="btn btn-primary go-to-profile" data-id="@Model?.MaSv">Đến</button></td>
+        </tr>
+    </tbody>
+</table> *@
+<script>
+    $(document).ready(function () {
+        $(".go-to-profile").click(function () {
+            var selectedID = $(this).data("id"); // Lấy giá trị data-id
+            if (selectedID) {
+                window.location.href = `/UserProfile/Profile?selectedID=${selectedID}`;
+            }
+        });
+        $(".go-to-dshocphan").click(function () {
+            var selectedID = $(this).data("id"); // Lấy giá trị data-id
+            if (selectedID) {
+                window.location.href = `/SinhViens/DSHocPhan?id=${selectedID}`;
+            }
+        });
+    });
+</script>

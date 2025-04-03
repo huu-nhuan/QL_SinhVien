@@ -196,7 +196,53 @@ namespace WebQuanLySinhVien.Controllers
                 return Json(new { success = false, message = $"Lỗi cơ sở dữ liệu: {ex.Message}" });
             }
         }
+        //get: addhp
+        public IActionResult AddHp(string id)
+        {
+            ViewBag.MaHp = new SelectList(_context.Hocphans, "MaHp", "MaHp"); 
 
+            // Chỉ thêm phần tử chứa id vào SelectList của MaSv
+            ViewBag.MaSv = new SelectList(new List<string> { id });
+            return PartialView("_CreatePartial", new Diemhp());
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddHp([Bind("MaSv,MaHp,DiemHp")] Diemhp diem)
+        {
+            if (DiemhpExists(diem.MaSv, diem.MaHp))
+            {
+                return Json(new { success = false, message = "Học phần này đã tồn tại" });
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Add(diem);
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Thêm thành công" });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                    return Json(new { success = false, message = $"Error: {ex.Message}" });
+                }
+            }
+            if (!ModelState.IsValid)
+            {
+                var errorList = ModelState
+                    .Where(ms => ms.Value.Errors.Any())
+                    .Select(ms => new
+                    {
+                        Key = ms.Key,
+                        Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                    })
+                    .ToList();
+
+                ViewBag.Errors = Newtonsoft.Json.JsonConvert.SerializeObject(errorList);
+                return Json(new { success = false, message = Newtonsoft.Json.JsonConvert.SerializeObject(errorList) });
+            }
+            return Json(new { success = false, message = "Thêm thất bại" });
+        }
         private bool DiemhpExists(string masv, string mahp)
         {
             return _context.Diemhps.Any(e => e.MaSv == masv && e.MaHp == mahp);
