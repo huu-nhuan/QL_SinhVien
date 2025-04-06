@@ -23,9 +23,11 @@ public partial class SinhVien
 
     public string Email { get; set; } = null!;
 
+    public int? HoSo { get; set; }
+
     public virtual ICollection<Diemhp> Diemhps { get; set; } = new List<Diemhp>();
 
     public virtual Taikhoan? IdTkNavigation { get; set; }
 
-    public virtual Lop? MaLopNavigation { get; set; } 
+    public virtual Lop? MaLopNavigation { get; set; }
 }

@@ -1,0 +1,83 @@
+﻿@model WebQuanLySinhVien.Models.HoSoHocTap
+@{
+    Layout = null;
+}
+<h4>Hồ sơ</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="createForm" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MaSv" class="control-label"></label>
+                <input asp-for="MaSv" class="form-control" value="@ViewData["MaSV"]" readonly />
+                <span asp-validation-for="MaSv" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TrangThai" class="control-label"></label>
+                <select asp-for="TrangThai" class="form-control">
+                    <option value="Đang học" selected>Đang học</option>
+                    <option value="Bảo lưu">Bảo lưu</option>
+                    <option value="Tốt nghiệp">Tốt nghiệp</option>
+                    <option value="Thôi học">Thôi học</option>
+                </select>
+                <span asp-validation-for="TrangThai" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgayNhapHoc" class="control-label"></label>
+                <input asp-for="NgayNhapHoc" type="date" class="form-control" />
+                <span asp-validation-for="NgayNhapHoc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgayTotNghiep" class="control-label"></label>
+                <input asp-for="NgayTotNghiep" type="date" class="form-control" />
+                <span asp-validation-for="NgayTotNghiep" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label asp-for="DiemTichLuy" class="control-label"></label>
+                <input asp-for="DiemTichLuy" class="form-control" />
+                <span asp-validation-for="DiemTichLuy" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label asp-for="SoTctichLuy" class="control-label"></label>
+                <input asp-for="SoTctichLuy" class="form-control" />
+                <span asp-validation-for="SoTctichLuy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GhiChu" class="control-label"></label>
+                <input asp-for="GhiChu" class="form-control" />
+                <span asp-validation-for="GhiChu" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label asp-for="NgayCapNhat" class="control-label"></label>
+                <input asp-for="NgayCapNhat" class="form-control" />
+                <span asp-validation-for="NgayCapNhat" class="text-danger"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    // Xử lý submit form bằng AJAX
+    $('#createForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(response) {
+            if (response.success) {
+                $('#actionModal').modal('hide');
+                swal("Thành công", response.message, "success")
+                    .then(() => location.reload()); // Reload trang sau khi tạo
+            }
+            else {
+                swal({
+                    title: "Lỗi!",
+                    text: response.message,
+                    icon: "error"
+                })
+                //$('#modalBody').html(response); // Hiển thị lại form nếu có lỗi
+            }
+        });
+    });
+</script>

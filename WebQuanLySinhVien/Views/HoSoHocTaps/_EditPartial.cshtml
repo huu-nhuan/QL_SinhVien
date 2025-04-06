@@ -1,0 +1,90 @@
+﻿@model WebQuanLySinhVien.Models.HoSoHocTap
+@{
+    Layout = null;
+}
+<h4>Hồ sơ</h4>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form id="editForm" asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="MaSv" class="control-label"></label>
+                <input asp-for="MaSv" class="form-control" readonly />
+                <span asp-validation-for="MaSv" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TrangThai" class="control-label"></label>
+                <select asp-for="TrangThai" class="form-control">
+                    <option value="Đang học">Đang học</option>
+                    <option value="Bảo lưu">Bảo lưu</option>
+                    <option value="Tốt nghiệp">Tốt nghiệp</option>
+                    <option value="Thôi học">Thôi học</option>
+                </select>
+                <span asp-validation-for="TrangThai" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgayNhapHoc" class="control-label"></label>
+                <input asp-for="NgayNhapHoc" type="date" class="form-control" />
+                <span asp-validation-for="NgayNhapHoc" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NgayTotNghiep" class="control-label"></label>
+                <input asp-for="NgayTotNghiep" type="date" class="form-control" />
+                <span asp-validation-for="NgayTotNghiep" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label asp-for="DiemTichLuy" class="control-label"></label>
+                <input asp-for="DiemTichLuy" class="form-control" />
+                <span asp-validation-for="DiemTichLuy" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label asp-for="SoTctichLuy" class="control-label"></label>
+                <input asp-for="SoTctichLuy" class="form-control" />
+                <span asp-validation-for="SoTctichLuy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GhiChu" class="control-label"></label>
+                <input asp-for="GhiChu" class="form-control" />
+                <span asp-validation-for="GhiChu" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="display: none;">
+                <label asp-for="NgayCapNhat" class="control-label"></label>
+                <input asp-for="NgayCapNhat" class="form-control" />
+                <span asp-validation-for="NgayCapNhat" class="text-danger"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    $('#editForm').submit(function(e) {
+        e.preventDefault();
+        console.log($(this).attr('action'));
+        $.post($(this).attr('action'), $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+                //location.reload();
+            } else {
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"
+                })
+                //$('#modalBody').html(data);
+            }
+        });
+    });
+</script>
+

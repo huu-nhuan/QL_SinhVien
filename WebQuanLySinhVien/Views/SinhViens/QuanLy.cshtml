@@ -13,8 +13,8 @@
         <table class="table table-hover table-striped">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
+                    <th>hành động</th>
+                    <th>đường dẫn</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,33 +26,15 @@
                     <td>Quản lý học phần</td>
                     <td><button class="btn btn-primary go-to-dshocphan" data-id="@Model?.MaSv">Đến</button></td>
                 </tr>
+                <tr>
+                    <td>Quản lý hồ sơ</td>
+                    <td><button class="btn btn-primary go-to-hoso" data-id="@Model?.MaSv">Đến</button></td>
+                </tr>
             </tbody>
         </table>
     </div>
 </div>
 
-@* <table class="table">
-    <thead>
-        <tr>
-            @* <th>
-                @Html.DisplayNameFor(model => model.HoTen)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.GioiTinh)
-            </th> 
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Quản lý thông tin cá nhân</td>
-            <td><button class="btn btn-primary go-to-profile" data-id="@Model?.MaSv">Đến</button></td>
-        </tr>
-        <tr>
-            <td>Quản lý thông tin cá nhân</td>
-            <td><button class="btn btn-primary go-to-profile" data-id="@Model?.MaSv">Đến</button></td>
-        </tr>
-    </tbody>
-</table> *@
 <script>
     $(document).ready(function () {
         $(".go-to-profile").click(function () {
@@ -65,6 +47,12 @@
             var selectedID = $(this).data("id"); // Lấy giá trị data-id
             if (selectedID) {
                 window.location.href = `/SinhViens/DSHocPhan?id=${selectedID}`;
+            }
+        });
+        $(".go-to-hoso").click(function () {
+            var selectedID = $(this).data("id"); // Lấy giá trị data-id
+            if (selectedID) {
+                window.location.href = `/HoSoHocTaps/DSHoSo?id=${selectedID}`;
             }
         });
     });

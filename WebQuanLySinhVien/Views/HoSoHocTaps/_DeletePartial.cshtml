@@ -1,0 +1,92 @@
+﻿@model WebQuanLySinhVien.Models.HoSoHocTap
+@{
+    Layout = null;
+}
+<h3>Bạn có chắc muốn xóa?</h3>
+<div>
+    <h4>Hồ sơ</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.MaSv)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.MaSv)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.TrangThai)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.TrangThai)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.NgayNhapHoc)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.NgayNhapHoc)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.NgayTotNghiep)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.NgayTotNghiep)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.DiemTichLuy)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.DiemTichLuy)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.SoTctichLuy)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.SoTctichLuy)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.GhiChu)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.GhiChu)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.NgayCapNhat)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.NgayCapNhat)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete" id="deleteForm">
+        <input type="hidden" asp-for="Id" />
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+            <button type="submit" class="btn btn-danger">Xác nhận</button>
+        </div>
+    </form>
+</div>
+<script>
+    $('#deleteForm').submit(function(e) {
+        e.preventDefault();
+        $.post($(this).attr('action'), $(this).serialize(), function(data) {
+            if (data.success) {
+                $('#actionModal').modal('hide');
+                swal({
+                    title: "Thành công!",
+                    text: data.message,
+                    icon: "success"
+                }).then(() => {
+                    location.reload(); // Reload sau khi đóng thông báo
+                 });
+
+            } else{
+                swal({
+                    title: "Lỗi!",
+                    text: data.message,
+                    icon: "error"
+                })
+
+            }
+        });
+    });
+</script>

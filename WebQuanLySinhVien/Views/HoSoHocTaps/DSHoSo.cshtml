@@ -1,0 +1,159 @@
+﻿@model IEnumerable<WebQuanLySinhVien.Models.HoSoHocTap>
+@{
+    ViewData["Title"] = "Danh sách hồ sơ học tập";
+}
+<h1>Danh sách hồ sơ</h1>
+<h4 class="card-title">@ViewData["hoten"]</h4>
+<p class="card-category">Mã số sinh viên: @ViewData["masv"]</p>
+<p style="display: flex; gap: 20px;">
+    <button class="btn btn-primary create-btn" data-id="@ViewData["masv"]">thêm hồ sơ mới</button>
+    <button class="btn btn-success useid-btn" >Áp dụng</button>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Họ tên
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th>
+                Ngày nhập học
+            </th>
+            <th>
+                Ngày dự kiến tốt nghiệp
+            </th>
+            <th>
+                Điểm tích lũy
+            </th>
+            <th>
+                Số tín chỉ tích lũy
+            </th>
+            <th>
+                Ghi chú
+            </th>
+            <th>
+                Ngày cập nhật
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="@((item.Id == (int)ViewData["idhs"]) ? "success" : "")">
+                <td>
+                    @ViewData["hoten"]
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TrangThai)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NgayNhapHoc)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NgayTotNghiep)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DiemTichLuy)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SoTctichLuy)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GhiChu)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NgayCapNhat)
+                </td>
+                <td>
+                    <button class="btn btn-primary edit-btn" data-id="@item.Id">Cập nhật</button>
+                    <button class="btn btn-danger delete-btn" data-id="@item.Id">Xóa</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+    $(document).ready(function() {
+        // Xử lý sửa
+        $('.edit-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/HoSoHocTaps/Edit/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Sửa thông tin');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý nút Create
+        $('.create-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/HoSoHocTaps/AddHs/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Thêm mới');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý xóa
+        $('.delete-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/HoSoHocTaps/Delete/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Xác nhận xóa');
+                $('#actionModal').modal('show');
+            });
+        });
+    });
+</script>
+<script>
+    let selectedId = null;
+
+    // Khi click vào hàng trong bảng
+    $(document).on('click', 'table tbody tr', function () {
+        // Bỏ chọn các hàng khác
+        $('table tbody tr').removeClass('selected');
+
+        // Thêm class selected vào hàng đang click
+        $(this).addClass('selected');
+
+        // Lấy data-id từ nút cập nhật trong hàng đó
+        selectedId = $(this).find('.edit-btn').data('id');
+
+        console.log("Đã chọn ID:", selectedId);
+    });
+
+    // Khi click vào nút ngoài bảng
+    $('.useid-btn').click(function (e) {
+        if (selectedId) {
+            $.ajax({
+            url: '/HoSoHocTaps/SuDungHS', // ← đổi tên controller thật của bạn
+            type: 'POST',
+            data: { id: selectedId },
+            success: function (response) {
+                if (response.success) {
+                    swal('Thành công', response.message, 'success');
+                } else {
+                    swal('Thất bại', response.message, 'error');
+                }
+            },
+            error: function () {
+                Swal('Lỗi', 'Không thể kết nối đến server.', 'error');
+            }
+        });
+        } else {
+            swal({
+                    title: "Chú ý!",
+                    text: "Hãy chọn một hồ sơ trước",
+                    icon: "warning"
+                })
+        }
+    });
+</script>
+<style>
+    tr.selected {
+        background-color: #85cae0;
+    }
+</style>

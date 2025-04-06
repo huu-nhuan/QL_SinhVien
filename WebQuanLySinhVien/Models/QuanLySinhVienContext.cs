@@ -19,6 +19,8 @@ public partial class QuanLySinhVienContext : DbContext
 
     public virtual DbSet<GiangVien> GiangViens { get; set; }
 
+    public virtual DbSet<HoSoHocTap> HoSoHocTaps { get; set; }
+
     public virtual DbSet<Hocphan> Hocphans { get; set; }
 
     public virtual DbSet<Khoa> Khoas { get; set; }
@@ -85,6 +87,22 @@ public partial class QuanLySinhVienContext : DbContext
             entity.HasOne(d => d.IdTkNavigation).WithMany(p => p.GiangViens)
                 .HasForeignKey(d => d.IdTk)
                 .HasConstraintName("FK_GiangVien_TAIKHOAN");
+        });
+
+        modelBuilder.Entity<HoSoHocTap>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.ToTable("HoSoHocTap");
+
+            entity.Property(e => e.DiemTichLuy).HasColumnType("decimal(5, 2)");
+            entity.Property(e => e.GhiChu).HasMaxLength(255);
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.MaSv)
+                .HasMaxLength(10)
+                .HasColumnName("MaSV");
+            entity.Property(e => e.SoTctichLuy).HasColumnName("SoTCTichLuy");
+            entity.Property(e => e.TrangThai).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Hocphan>(entity =>
