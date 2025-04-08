@@ -1,4 +1,5 @@
 ﻿@model WebQuanLySinhVien.Models.ViewModels.UserProfile
+
 @using System.Text.Json
 @{
     ViewData["Title"] = "Thông tin người dùng";
@@ -51,10 +52,10 @@
                                 {
                                     <select asp-for="SelectedID" class="form-control" id="userSelect" onchange="redirectToProfile(this.value)">
                                         <option value="">-- Chọn ID --</option>
-                                        @foreach (var id in Model.DanhSachID)
+                                        @foreach (var item in Model.DanhSachUser)
                                         {
-                                            <option value="@id" selected="@(Model.SelectedID == id ? "selected" : null)">
-                                                @id
+                                            <option value="@item.ID" selected="@(Model.SelectedID == item.ID ? "selected" : null)">
+                                                @item.ID - @item.Ten 
                                             </option>
                                         }
                                     </select>
@@ -199,6 +200,7 @@
     }
     window.onload = function(){
         var _model = @Html.Raw(JsonSerializer.Serialize(Model)); console.log(_model);
+        //console.log(@ViewBag.Errors);
     }
 </script>
 

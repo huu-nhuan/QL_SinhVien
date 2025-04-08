@@ -259,7 +259,11 @@ namespace WebQuanLySinhVien.Controllers
                 return NotFound();
             }
             ViewData["hoten"] = _context.SinhViens.Where(s => s.MaSv == id).Select(s => s.HoTen).FirstOrDefault();
-            ViewData["idhs"] = _context.SinhViens.Where(s => s.MaSv == id).Select(s => s.HoSo).FirstOrDefault();
+            ViewData["idhs"] = _context.SinhViens
+            .Where(s => s.MaSv == id)
+            .Select(s => s.HoSo)
+            .FirstOrDefault() ?? 0;
+
             ViewData["masv"] = id;
             return View(dshs);
         }

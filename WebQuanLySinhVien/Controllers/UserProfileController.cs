@@ -20,6 +20,20 @@ namespace WebQuanLySinhVien.Controllers
         }
         public  async Task<IActionResult> Profile(string selectedID)
         {
+            var danhSachUser = _context.SinhViens
+            .Select(sv => new UserInfo
+            {
+                ID = sv.MaSv,
+                Ten = sv.HoTen ?? "Không có tên"
+            })
+            .Concat(_context.GiangViens
+                .Select(gv => new UserInfo
+                {
+                    ID = gv.MaGv,
+                    Ten = gv.HoTen ?? "Không có tên"
+                }))
+            .OrderBy(x => x.ID)
+            .ToList();
             var danhSachID =  _context.SinhViens.OrderBy(sv => sv.MaSv).Select(sv => sv.MaSv).Concat(
                               _context.GiangViens.OrderBy(gv => gv.MaGv).Select(gv => gv.MaGv)).ToList();
             if (selectedID == null)
@@ -39,6 +53,7 @@ namespace WebQuanLySinhVien.Controllers
             {
                 var viewModel = new UserProfile
                 {
+                    DanhSachUser = danhSachUser,
                     DanhSachID = danhSachID,
                     SelectedID = selectedID
                 };
@@ -49,6 +64,7 @@ namespace WebQuanLySinhVien.Controllers
                 var patch = _context.Taikhoans.Where(i => i.IdTk == gv.IdTk).Select(x => x.ImagePath).ToString();
                 var viewModel = new UserProfile
                 {
+                    DanhSachUser = danhSachUser,
                     DanhSachID = danhSachID,
                     SelectedID = selectedID,
                     HoTen = gv.HoTen,
@@ -66,6 +82,7 @@ namespace WebQuanLySinhVien.Controllers
                 var patch = _context.Taikhoans.Where(i => i.IdTk == sv.IdTk).Select(x => x.ImagePath).FirstOrDefault();
                 var viewModel = new UserProfile
                 {
+                    DanhSachUser = danhSachUser,
                     DanhSachID = danhSachID,
                     SelectedID = selectedID,
                     HoTen = sv.HoTen,
@@ -84,8 +101,23 @@ namespace WebQuanLySinhVien.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Profile(UserProfile user, IFormFile? imageFile)
         {
+            var danhSachUser = _context.SinhViens
+            .Select(sv => new UserInfo
+            {
+                ID = sv.MaSv,
+                Ten = sv.HoTen ?? "Không có tên"
+            })
+            .Concat(_context.GiangViens
+                .Select(gv => new UserInfo
+                {
+                    ID = gv.MaGv,
+                    Ten = gv.HoTen ?? "Không có tên"
+                }))
+            .OrderBy(x => x.ID)
+            .ToList();
             var danhSachID = _context.SinhViens.OrderBy(sv => sv.MaSv).Select(sv => sv.MaSv).Concat(
                              _context.GiangViens.OrderBy(gv => gv.MaGv).Select(gv => gv.MaGv)).ToList();
+            user.DanhSachUser = danhSachUser;
             user.DanhSachID=danhSachID;
             var sv = await _context.SinhViens.AsNoTracking().FirstOrDefaultAsync(s => s.MaSv == user.SelectedID);
             var gv = await _context.GiangViens.AsNoTracking().FirstOrDefaultAsync(g => g.MaGv == user.SelectedID); 
@@ -188,21 +220,22 @@ namespace WebQuanLySinhVien.Controllers
                     ViewData["thanhcong"] = "Cập nhật thành công";
                     return View(user);
                 }
-                
-                //if (!ModelState.IsValid)
-                //{
-                //    var errorList = ModelState
-                //        .Where(ms => ms.Value.Errors.Any())
-                //        .Select(ms => new
-                //        {
-                //            Key = ms.Key,
-                //            Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToList()
-                //        })
-                //        .ToList();
 
-                //    ViewBag.Errors = Newtonsoft.Json.JsonConvert.SerializeObject(errorList);
-                //}
-                
+                if (!ModelState.IsValid)
+                {
+                    var errorList = ModelState
+                        .Where(ms => ms.Value.Errors.Any())
+                        .Select(ms => new
+                        {
+                            Key = ms.Key,
+                            Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                        })
+                        .ToList();
+
+                    ViewBag.Errors = Newtonsoft.Json.JsonConvert.SerializeObject(errorList);
+                }
+
+
                 user.ImagePath = _context.Taikhoans.Where(i => i.IdTk == sv.IdTk).Select(x => x.ImagePath).FirstOrDefault();
                 ViewData["Thongbao"] = "có gì đó không đúng";
                 return View(user);

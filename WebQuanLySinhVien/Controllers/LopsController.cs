@@ -65,9 +65,31 @@ namespace WebQuanLySinhVien.Controllers
             }    
             if (ModelState.IsValid)
             {
-                _context.Add(lop);
-                await _context.SaveChangesAsync();
-                return Json(new { success = true, message = "Thêm thành công" });
+                try
+                {
+                    _context.Add(lop);
+                    await _context.SaveChangesAsync();
+                    return Json(new { success = true, message = "Thêm thành công" });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error: {ex.Message}");
+                    return Json(new { success = false, message = $"Error: {ex.Message}" });
+                }
+            }
+            if (!ModelState.IsValid)
+            {
+                var errorList = ModelState
+                    .Where(ms => ms.Value.Errors.Any())
+                    .Select(ms => new
+                    {
+                        Key = ms.Key,
+                        Errors = ms.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                    })
+                    .ToList();
+
+                ViewBag.Errors = Newtonsoft.Json.JsonConvert.SerializeObject(errorList);
+                return Json(new { success = false, message = Newtonsoft.Json.JsonConvert.SerializeObject(errorList) });
             }
             return Json(new { success = false, message = "Thêm thất bại" });
         }

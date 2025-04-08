@@ -51,7 +51,9 @@ public partial class QuanLySinhVienContext : DbContext
             entity.Property(e => e.MaHp)
                 .HasMaxLength(10)
                 .HasColumnName("MaHP");
-            entity.Property(e => e.DiemHp).HasColumnName("DiemHP");
+            entity.Property(e => e.DiemHp)
+                .HasColumnType("decimal(5, 2)")
+                .HasColumnName("DiemHP");
 
             entity.HasOne(d => d.MaHpNavigation).WithMany(p => p.Diemhps)
                 .HasForeignKey(d => d.MaHp)
@@ -91,13 +93,13 @@ public partial class QuanLySinhVienContext : DbContext
 
         modelBuilder.Entity<HoSoHocTap>(entity =>
         {
-            entity.HasKey(e => e.Id);
-
             entity.ToTable("HoSoHocTap");
 
+            entity.Property(e => e.Id)
+                .ValueGeneratedNever()
+                .HasColumnName("id");
             entity.Property(e => e.DiemTichLuy).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.GhiChu).HasMaxLength(255);
-            entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.MaSv)
                 .HasMaxLength(10)
                 .HasColumnName("MaSV");
@@ -191,6 +193,10 @@ public partial class QuanLySinhVienContext : DbContext
             entity.Property(e => e.Sdt)
                 .HasMaxLength(10)
                 .HasColumnName("SDT");
+
+            entity.HasOne(d => d.HoSoNavigation).WithMany(p => p.SinhViens)
+                .HasForeignKey(d => d.HoSo)
+                .HasConstraintName("FK_SinhVien_HoSoHocTap");
 
             entity.HasOne(d => d.IdTkNavigation).WithMany(p => p.SinhViens)
                 .HasForeignKey(d => d.IdTk)

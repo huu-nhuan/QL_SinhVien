@@ -31,7 +31,7 @@ namespace WebQuanLySinhVien.Controllers
             var danhSachIdHocPhan = _context.Hocphans.Where(hp => hp.MaNganh==manganh).OrderBy(hp => hp.MaHp).Select(hp => hp.MaHp).ToList(); // lấy danh sách hp
             var danhSachSoLuongSinhVien = new List<SoLuongSinhVien>(); //tạo list
             var danhSachIDNganh = _context.Nganhs.OrderBy(n => n.MaNganh).Select(n => n.MaNganh).ToList(); //lấy danh sach id ngành
-            int[] danhSachDiem = new int[danhSachIdHocPhan.Count]; // tạo mảng chứa danh sách điểm của sv
+            decimal[] danhSachDiem = new decimal[danhSachIdHocPhan.Count]; // tạo mảng chứa danh sách điểm của sv
             int temp =0; //biến tạm lưu vị trí trong mảng danhSachDiem
 
             // tạo danh sách gồm mã hp và số lượng sinh viên tương ứng
