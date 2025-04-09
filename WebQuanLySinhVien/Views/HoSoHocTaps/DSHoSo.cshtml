@@ -134,7 +134,7 @@
             data: { id: selectedId },
             success: function (response) {
                 if (response.success) {
-                    swal('Thành công', response.message, 'success');
+                    swal('Thành công', response.message, 'success').then(() => location.reload());;
                 } else {
                     swal('Thất bại', response.message, 'error');
                 }

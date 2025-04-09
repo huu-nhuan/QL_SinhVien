@@ -19,8 +19,8 @@ public partial class Diemhp
     [Display(Name = "Điểm học phần")]
     [Range(0, 10, ErrorMessage = "Điểm học phần phải từ 0 đến 10")]
     public decimal? DiemHp { get; set; }
-
+    [Display(Name = "Mã học phần")]
     public virtual Hocphan? MaHpNavigation { get; set; }
-
+    [Display(Name = "Mã sinh viên")]
     public virtual SinhVien? MaSvNavigation { get; set; }
 }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using WebQuanLySinhVien.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebQuanLySinhVien.Controllers
 {
@@ -20,29 +21,45 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: SinhViens
-        public async Task<IActionResult> Index(string searchString, string searchBy)
+        public async Task<IActionResult> Index(string searchString, string searchBy, int page = 1, int pageSize = 10)
         {
-            var quanLySinhVienContext = _context.SinhViens.Include(s => s.IdTkNavigation).Include(s => s.MaLopNavigation);
+            var quanLySinhVienContext = _context.SinhViens.Include(s => s.IdTkNavigation).Include(s => s.MaLopNavigation).AsQueryable();
 
             if(!String.IsNullOrEmpty(searchString))
             {
                 if(searchBy == "ten")
                 {
-                    var sv = await quanLySinhVienContext.Where(s => s.HoTen.Contains(searchString)).ToListAsync();
-                    ViewData["searchString"] = searchString;
-                    ViewData["searchBy"] = searchBy;
-                    return View(sv);
+                    quanLySinhVienContext =  quanLySinhVienContext.Where(s => s.HoTen.Contains(searchString));
+                    //ViewData["searchString"] = searchString;
+                    //ViewData["searchBy"] = searchBy;
+                    //return View(quanLySinhVienContext);
                 }
                 else
                 {
-                    var sv = await quanLySinhVienContext.Where(s => s.GioiTinh.Contains(searchString)).ToListAsync();
-                    ViewData["searchString"] = searchString;
-                    ViewData["searchBy"] = searchBy;
-                    return View(sv);
+                    quanLySinhVienContext =  quanLySinhVienContext.Where(s => s.Email.Contains(searchString));
+                    //ViewData["searchString"] = searchString;
+                    //ViewData["searchBy"] = searchBy;
+                    //return View(quanLySinhVienContext);
                 }
                 
-            }    
-            return View(await quanLySinhVienContext.ToListAsync());
+            }
+            // Tính toán phân trang
+            var totalItems = await quanLySinhVienContext.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = await quanLySinhVienContext
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewData["searchBy"] = searchBy;
+            ViewData["searchString"] = searchString;
+
+            return View(items);
         }
 
         // GET: SinhViens/Details/5

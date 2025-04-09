@@ -20,10 +20,32 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Hocphans
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, int page = 1, int pageSize = 10)
         {
-            var quanLySinhVienContext = _context.Hocphans.Include(h => h.MaNganhNavigation);
-            return View(await quanLySinhVienContext.ToListAsync());
+            var quanLySinhVienContext = _context.Hocphans.Include(h => h.MaNganhNavigation).AsQueryable();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                quanLySinhVienContext = quanLySinhVienContext.Where(s => s.TenHp.Contains(searchString));
+            }
+            // Tính toán phân trang
+            var totalItems = await quanLySinhVienContext.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = await quanLySinhVienContext
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewData["searchString"] = searchString;
+
+            return View(items);
+            //var quanLySinhVienContext = _context.Hocphans.Include(h => h.MaNganhNavigation);
+            //return View(await quanLySinhVienContext.ToListAsync());
         }
 
         // GET: Hocphans/Details/5

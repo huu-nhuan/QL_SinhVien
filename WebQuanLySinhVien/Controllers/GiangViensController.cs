@@ -20,10 +20,47 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: GiangViens
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string searchBy, int page = 1, int pageSize = 10)
         {
-            var quanLySinhVienContext = _context.GiangViens.Include(g => g.IdTkNavigation);
-            return View(await quanLySinhVienContext.ToListAsync());
+            var quanLySinhVienContext = _context.GiangViens.Include(g => g.IdTkNavigation).AsQueryable();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                if (searchBy == "ten")
+                {
+                    quanLySinhVienContext = quanLySinhVienContext.Where(s => s.HoTen.Contains(searchString));
+                    //ViewData["searchString"] = searchString;
+                    //ViewData["searchBy"] = searchBy;
+                    //return View(quanLySinhVienContext);
+                }
+                else
+                {
+                    quanLySinhVienContext = quanLySinhVienContext.Where(s => s.Email.Contains(searchString));
+                    //ViewData["searchString"] = searchString;
+                    //ViewData["searchBy"] = searchBy;
+                    //return View(quanLySinhVienContext);
+                }
+
+            }
+            // Tính toán phân trang
+            var totalItems = await quanLySinhVienContext.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = await quanLySinhVienContext
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewData["searchBy"] = searchBy;
+            ViewData["searchString"] = searchString;
+
+            return View(items);
+            //var quanLySinhVienContext = _context.GiangViens.Include(g => g.IdTkNavigation);
+            //return View(await quanLySinhVienContext.ToListAsync());
         }
 
         // GET: GiangViens/Details/5

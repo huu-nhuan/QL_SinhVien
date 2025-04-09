@@ -22,10 +22,10 @@
             </div>
             <div class="form-check form-check-radio">
                 <label class="form-check-label">
-                    <input class="form-check-input" type="radio" name="searchBy" value="gt"
-                    @(ViewData["searchBy"]?.ToString() == "gt" ? "checked" : "")>
+                    <input class="form-check-input" type="radio" name="searchBy" value="email"
+                    @(ViewData["searchBy"]?.ToString() == "email" ? "checked" : "")>
                     <span class="form-check-sign"></span>
-                    Tìm theo giới tính
+                    Tìm theo Email
                 </label>
             </div>
             <div class="row">
@@ -108,6 +108,105 @@
 }
     </tbody>
 </table>
+
+<div class="fixed-table-pagination">
+    <div class="pull-left pagination-detail">
+        <span class="pagination-info">
+            Hiển thị @((ViewBag.CurrentPage - 1) * ViewBag.PageSize + 1) đến @Math.Min(ViewBag.CurrentPage * ViewBag.PageSize, ViewBag.TotalItems) 
+        </span>
+        <span class="page-list">
+            <span class="btn-group dropup">
+                <button type="button" class="btn btn-outline dropdown-toggle" data-toggle="dropdown">
+                    <span class="page-size">@ViewBag.PageSize</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    @{
+                        var pageSizes = new[] { 5, 10, 25, 50 };
+                        foreach (var size in pageSizes)
+                        {
+                            <li class="@(size == ViewBag.PageSize ? "active" : "")">
+                                <a href="@Url.Action("Index", new {
+                                    page = 1,
+                                    pageSize = size,
+                                    searchBy = ViewData["searchBy"],
+                                    searchString = ViewData["searchString"]
+                                })">@size</a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </span> dòng/trang
+        </span>
+    </div>
+    <div class="pull-right pagination">
+        <ul class="pagination">
+            @{
+                int currentPage = ViewBag.CurrentPage;
+                int totalPages = ViewBag.TotalPages;
+                string searchBy = ViewData["searchBy"]?.ToString();
+                string searchString = ViewData["searchString"]?.ToString();
+
+                // Nút đầu trang
+                <li class="page-first @(currentPage == 1 ? "disabled" : "")">
+                    <a href="@Url.Action("Index", new {
+                        page = 1,
+                        pageSize = ViewBag.PageSize,
+                        searchBy = searchBy,
+                        searchString = searchString
+                    })">«</a>
+                </li>
+
+                // Nút trang trước
+                <li class="page-pre @(currentPage == 1 ? "disabled" : "")">
+                    <a href="@Url.Action("Index", new {
+                        page = currentPage - 1,
+                        pageSize = ViewBag.PageSize,
+                        searchBy = searchBy,
+                        searchString = searchString
+                    })">‹</a>
+                </li>
+
+                // Các nút trang
+                int startPage = Math.Max(1, currentPage - 2);
+                int endPage = Math.Min(totalPages, currentPage + 2);
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-number @(i == currentPage ? "active" : "")">
+                        <a href="@Url.Action("Index", new {
+                            page = i,
+                            pageSize = ViewBag.PageSize,
+                            searchBy = searchBy,
+                            searchString = searchString
+                        })">@i</a>
+                    </li>
+                }
+
+                // Nút trang sau
+                <li class="page-next @(currentPage == totalPages ? "disabled" : "")">
+                    <a href="@Url.Action("Index", new {
+                        page = currentPage + 1,
+                        pageSize = ViewBag.PageSize,
+                        searchBy = searchBy,
+                        searchString = searchString
+                    })">›</a>
+                </li>
+
+                // Nút cuối trang
+                <li class="page-last @(currentPage == totalPages ? "disabled" : "")">
+                    <a href="@Url.Action("Index", new {
+                        page = totalPages,
+                        pageSize = ViewBag.PageSize,
+                        searchBy = searchBy,
+                        searchString = searchString
+                    })">»</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
 
 <script>
     $(document).ready(function() {
