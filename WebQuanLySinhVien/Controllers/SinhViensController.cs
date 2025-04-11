@@ -105,6 +105,14 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return Json(new { success = false, message = "Mã sinh viên này đã tồn tại" });
             }
+            if (emailExist(sinhVien.Email))
+            {
+                return Json(new { success = false, message = "Email này đã tồn tại" });
+            }
+            if (sdtlExist(sinhVien.Sdt))
+            {
+                return Json(new { success = false, message = "Số điên thoại này đã tồn tại" });
+            }
             if (ModelState.IsValid)
             {
                 try
@@ -183,6 +191,14 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return NotFound();
             }
+            if(emailExist(sinhVien.Email, sinhVien.MaSv))
+            {
+                return Json(new { success = false, message = "Email này đã tồn tại" });
+            }
+            if (sdtlExist(sinhVien.Sdt, sinhVien.MaSv))
+            {
+                return Json(new { success = false, message = "Số điện thoại này đã tồn tại" });
+            }
 
             if (ModelState.IsValid)
             {
@@ -192,7 +208,7 @@ namespace WebQuanLySinhVien.Controllers
                     await _context.SaveChangesAsync();
                     return Json(new { success = true, message = "Cập nhật thành công" });
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
                     if (!SinhVienExist(sinhVien.MaSv))
                     {
@@ -200,7 +216,7 @@ namespace WebQuanLySinhVien.Controllers
                     }
                     else
                     {
-                        throw;
+                        return Json(new { success = false, message = $"Lỗi cơ sở dữ liệu: {ex.Message}" });
                     }
                 }
             }
@@ -295,6 +311,23 @@ namespace WebQuanLySinhVien.Controllers
         private bool SinhVienExist(string id)
         {
             return _context.SinhViens.Any(e => e.MaSv == id);
+        }
+
+        private bool emailExist(string email, string? id = null)
+        {
+            if(!string.IsNullOrEmpty(id))
+            {
+                return _context.SinhViens.Any(e => e.Email == email && e.MaSv != id);
+            }    
+            return _context.SinhViens.Any(e => e.Email == email);
+        }
+        private bool sdtlExist(string sdt, string? id = null)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                return _context.SinhViens.Any(e => e.Sdt == sdt && e.MaSv != id);
+            }
+            return _context.SinhViens.Any(e => e.Sdt == sdt);
         }
         private bool IsForeignKeyViolation(DbUpdateException ex)
         {

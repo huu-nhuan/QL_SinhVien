@@ -140,7 +140,7 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return NotFound();
             }
-            if (TaikhoanExists(taikhoan.TenDangNhap))
+            if (TaikhoanExists(taikhoan.TenDangNhap, id))
             {
                 return Json(new { success = false, message = "Tên đăng nhập này đã tồn tại" });
             }
@@ -152,7 +152,7 @@ namespace WebQuanLySinhVien.Controllers
                     await _context.SaveChangesAsync();
                     return Json(new { success = true, message = "Cập nhật thành công" });
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
                     if (!IdExists(taikhoan.IdTk))
                     {
@@ -160,7 +160,7 @@ namespace WebQuanLySinhVien.Controllers
                     }
                     else
                     {
-                        throw;
+                        return Json(new { success = false, message = $"Lỗi cơ sở dữ liệu: {ex.Message}" });
                     }
                 }
             }
@@ -211,8 +211,12 @@ namespace WebQuanLySinhVien.Controllers
             }
         }
 
-        private bool TaikhoanExists(string tdn)
+        private bool TaikhoanExists(string tdn, int id = 0)
         {
+            if(id>0)
+            {
+                return _context.Taikhoans.Any(e => e.TenDangNhap == tdn && e.IdTk != id);
+            }    
             return _context.Taikhoans.Any(e => e.TenDangNhap == tdn);
         }
 

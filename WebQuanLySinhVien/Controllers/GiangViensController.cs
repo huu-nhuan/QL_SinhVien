@@ -101,6 +101,14 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return Json(new { success = false, message = "Mã giảng viên này đã tồn tại" });
             }
+            if (emailExist(giangVien.Email))
+            {
+                return Json(new { success = false, message = "Email này đã tồn tại" });
+            }
+            if (sdtlExist(giangVien.Sdt))
+            {
+                return Json(new { success = false, message = "Số điên thoại này đã tồn tại" });
+            }
             if (ModelState.IsValid)
             {
                 try
@@ -172,7 +180,14 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return NotFound();
             }
-
+            if (emailExist(giangVien.Email, giangVien.MaGv))
+            {
+                return Json(new { success = false, message = "Email này đã tồn tại" });
+            }
+            if (sdtlExist(giangVien.Sdt, giangVien.MaGv))
+            {
+                return Json(new { success = false, message = "Số điện thoại này đã tồn tại" });
+            }
             if (ModelState.IsValid)
             {
                 try
@@ -181,7 +196,7 @@ namespace WebQuanLySinhVien.Controllers
                     await _context.SaveChangesAsync();
                     return Json(new { success = true, message = "Cập nhật thành công" });
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
                     if (!GiangVienExists(giangVien.MaGv))
                     {
@@ -189,7 +204,7 @@ namespace WebQuanLySinhVien.Controllers
                     }
                     else
                     {
-                        throw;
+                        return Json(new { success = false, message = $"Lỗi cơ sở dữ liệu: {ex.Message}" });
                     }
                 }
             }
@@ -246,6 +261,32 @@ namespace WebQuanLySinhVien.Controllers
         {
             return _context.GiangViens.Any(e => e.MaGv == id);
         }
+        private bool emailExist(string email, string? id = null)
+        {
+            if (!string.IsNullOrEmpty(id))
+            {
+                return _context.GiangViens.Any(e => e.Email == email && e.MaGv != id);
+            }
+            return _context.GiangViens.Any(e => e.Email == email);
+        }
+        private bool sdtlExist(string sdt, string? id = null)
+        {
+            if (string.IsNullOrEmpty(sdt))
+            {
+                // Nếu số điện thoại là null hoặc rỗng, thì cho phép giống nhau
+                return false;
+            }
+
+            if (!string.IsNullOrEmpty(id))
+            {
+                // Nếu đang cập nhật, chỉ kiểm tra trùng với người khác
+                return _context.GiangViens.Any(e => e.Sdt == sdt && e.MaGv != id);
+            }
+
+            // Nếu đang tạo mới, kiểm tra xem có ai có số này chưa
+            return _context.GiangViens.Any(e => e.Sdt == sdt);
+        }
+
         private bool IsForeignKeyViolation(DbUpdateException ex)
         {
             return ex.InnerException is SqlException sqlEx &&

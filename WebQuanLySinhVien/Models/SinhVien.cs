@@ -49,8 +49,8 @@ public partial class SinhVien
     public virtual ICollection<Diemhp> Diemhps { get; set; } = new List<Diemhp>();
 
     public virtual HoSoHocTap? HoSoNavigation { get; set; }
-
+    [Display(Name = "ID tài khoản")]
     public virtual Taikhoan? IdTkNavigation { get; set; }
-
+    [Display(Name = "Mã lớp")]
     public virtual Lop? MaLopNavigation { get; set; }
 }

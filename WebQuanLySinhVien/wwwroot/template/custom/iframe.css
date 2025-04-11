@@ -1,0 +1,43 @@
+﻿.iframe-container {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+}
+
+.iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Ẩn cuộn ngang trên toàn trang */
+html, body {
+    overflow-x: hidden;
+}
+
+/* Điều chỉnh vị trí và kích thước icon bubble */
+iframe.bp-widget,
+iframe.bp-widget-floating,
+iframe[name="fab"] {
+    position: fixed !important;
+    bottom: 32px !important; /* Điều chỉnh cao hơn chút */
+    right: 32px !important; /* Điều chỉnh sang trái chút */
+    width: 64px !important;
+    height: 64px !important;
+    border: none !important;
+    z-index: 9999 !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    overflow: hidden !important;
+}
+
+/* Giảm viền trắng nếu có */
+.bpw-floating-button {
+    bottom: 32px !important;
+    right: 32px !important;
+}
+
