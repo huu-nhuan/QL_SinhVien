@@ -190,6 +190,40 @@ namespace WebQuanLySinhVien.Controllers
                 //return PartialView("_DeletePartial", khoa);
         }
 
+        public async Task<IActionResult> DSNganh(string searchString, string makhoa, int page = 1, int pageSize = 10)
+        {
+            var nganhs = _context.Nganhs.Include(n => n.MaKhoaNavigation).AsQueryable();
+
+            if (!String.IsNullOrEmpty(makhoa))
+            {
+                nganhs = nganhs.Where(s => s.MaKhoa.Contains(makhoa));
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                nganhs = nganhs.Where(s => s.TenNganh.Contains(searchString));
+            }
+            // Tính toán phân trang
+            var totalItems = await nganhs.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = await nganhs
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewData["TenKhoa"] = _context.Khoas.Where(k =>k.MaKhoa == makhoa).Select(k => k.TenKhoa).FirstOrDefault();
+            ViewData["MaKhoa"] = makhoa;
+            ViewData["searchString"] = searchString;
+
+            return View(items);
+            //var quanLySinhVienContext = _context.Nganhs.Include(n => n.MaKhoaNavigation);
+            //return View(await quanLySinhVienContext.ToListAsync());
+        }
         private bool KhoaExists(string id)
         {
             return _context.Khoas.Any(e => e.MaKhoa == id);

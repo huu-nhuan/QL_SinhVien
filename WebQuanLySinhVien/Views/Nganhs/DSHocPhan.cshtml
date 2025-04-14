@@ -1,17 +1,17 @@
-﻿@model IEnumerable<WebQuanLySinhVien.Models.Lop>
+﻿@model IEnumerable<WebQuanLySinhVien.Models.Hocphan>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách học phần";
 }
 
-<h1>Danh sách lớp</h1>
+<h1>Các học phần của ngành @ViewData["TenNganh"]</h1>
 
 <p>
     <button class="btn btn-primary create-btn">Tạo mới</button>
 </p>
 <div class="row">
     <div class="col-md-6">
-        <form class="d-flex align-items-center" asp-action="Index" asp-controller="Lops">
+        <form class="d-flex align-items-center" asp-action="DSHocPhan" asp-controller="Nganhs" asp-route-manganh="@ViewData["MaNganh"]">
             <div class="row">
                 <div class="col-md-8">
                     <input name="searchString" class="form-control me-1" type="search" placeholder="Tìm kiếm" aria-label="Tìm kiếm" value="@ViewData["searchString"]" />
@@ -23,45 +23,55 @@
         </form>
     </div>
     <div class="col-md-6">
-        <a asp-action="Index" asp-controller="Lops">Trở về danh sách đầy đủ</a>
+        <a asp-action="DSHocPhan" asp-controller="Nganhs" asp-route-manganh="@ViewData["MaNganh"]">Xem danh sách đầy đủ</a>
     </div>
 </div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TenLop)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NamNhapHoc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaGvNavigation)
-            </th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenLop)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NamNhapHoc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaGvNavigation.MaGv)
-            </td>
-            <td>
-                <button class="btn btn-primary edit-btn" data-id="@item.MaLop">Sửa</button>
-                <button class="btn btn-primary"><a asp-action="DSThanhVien" asp-route-malop="@item.MaLop">Chi tiết</a></button>
-                <button class="btn btn-danger delete-btn" data-id="@item.MaLop">Xóa</button>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="content table-responsive table-full-width">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.TenHp)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.SoTc)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.HocKy)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MaNganhNavigation)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TenHp)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.SoTc)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HocKy)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaNganhNavigation.MaNganh)
+                    </td>
+                    <td>
+                        <button class="btn btn-primary edit-btn" data-id="@item.MaHp">Sửa</button>
+                        <button class="btn btn-primary"><a asp-action="Details" asp-route-id="@item.MaHp">Chi tiết</a></button>
+                        <button class="btn btn-danger delete-btn" data-id="@item.MaHp">Xóa</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 
 <div class="fixed-table-pagination">
     <div class="pull-left pagination-detail">
@@ -80,10 +90,11 @@
                         foreach (var size in pageSizes)
                         {
                             <li class="@(size == ViewBag.PageSize ? "active" : "")">
-                                <a href="@Url.Action("Index", new {
+                                <a href="@Url.Action("DSHocPhan", new {
                                     page = 1,
                                     pageSize = size,
-                                    searchString = ViewData["searchString"]
+                                    searchString = ViewData["searchString"],
+                                    manganh = ViewData["MaNganh"]
                                 })">@size</a>
                             </li>
                         }
@@ -101,19 +112,21 @@
 
                 // Nút đầu trang
                 <li class="page-first @(currentPage == 1 ? "disabled" : "")">
-                    <a href="@Url.Action("Index", new {
+                    <a href="@Url.Action("DSHocPhan", new {
                         page = 1,
                         pageSize = ViewBag.PageSize,
-                        searchString = searchString
+                        searchString = searchString,
+                        manganh = ViewData["MaNganh"]
                     })">«</a>
                 </li>
 
                 // Nút trang trước
                 <li class="page-pre @(currentPage == 1 ? "disabled" : "")">
-                    <a href="@Url.Action("Index", new {
+                    <a href="@Url.Action("DSHocPhan", new {
                         page = currentPage - 1,
                         pageSize = ViewBag.PageSize,
-                        searchString = searchString
+                        searchString = searchString,
+                        manganh = ViewData["MaNganh"]
                     })">‹</a>
                 </li>
 
@@ -124,29 +137,32 @@
                 for (int i = startPage; i <= endPage; i++)
                 {
                     <li class="page-number @(i == currentPage ? "active" : "")">
-                        <a href="@Url.Action("Index", new {
+                        <a href="@Url.Action("DSHocPhan", new {
                             page = i,
                             pageSize = ViewBag.PageSize,
-                            searchString = searchString
+                            searchString = searchString,
+                            manganh = ViewData["MaNganh"]
                         })">@i</a>
                     </li>
                 }
 
                 // Nút trang sau
                 <li class="page-next @(currentPage == totalPages ? "disabled" : "")">
-                    <a href="@Url.Action("Index", new {
+                    <a href="@Url.Action("DSHocPhan", new {
                         page = currentPage + 1,
                         pageSize = ViewBag.PageSize,
-                        searchString = searchString
+                        searchString = searchString,
+                        manganh = ViewData["MaNganh"]
                     })">›</a>
                 </li>
 
                 // Nút cuối trang
                 <li class="page-last @(currentPage == totalPages ? "disabled" : "")">
-                    <a href="@Url.Action("Index", new {
+                    <a href="@Url.Action("DSHocPhan", new {
                         page = totalPages,
                         pageSize = ViewBag.PageSize,
-                        searchString = searchString
+                        searchString = searchString,
+                        manganh = ViewData["MaNganh"]
                     })">»</a>
                 </li>
             }
@@ -154,12 +170,13 @@
     </div>
 </div>
 
+
 <script>
     $(document).ready(function() {
         // Xử lý sửa
         $('.edit-btn').click(function() {
             var id = $(this).data('id');
-            $.get(`/Lops/Edit/${id}`, function(data) {
+            $.get(`/Hocphans/Edit/${id}`, function(data) {
                 $('#modalBody').html(data);
                 $('#actionModal .modal-title').text('Sửa thông tin');
                 $('#actionModal').modal('show');
@@ -168,7 +185,7 @@
 
         // Xử lý nút Create
         $('.create-btn').click(function() {
-            $.get('/Lops/Create', function(data) {
+            $.get('/Hocphans/Create', function(data) {
                 $('#modalBody').html(data);
                 $('#actionModal .modal-title').text('Thêm mới');
                 $('#actionModal').modal('show');
@@ -178,7 +195,7 @@
         // Xử lý xóa
         $('.delete-btn').click(function() {
             var id = $(this).data('id');
-            $.get(`/Lops/Delete/${id}`, function(data) {
+            $.get(`/Hocphans/Delete/${id}`, function(data) {
                 $('#modalBody').html(data);
                 $('#actionModal .modal-title').text('Xác nhận xóa');
                 $('#actionModal').modal('show');

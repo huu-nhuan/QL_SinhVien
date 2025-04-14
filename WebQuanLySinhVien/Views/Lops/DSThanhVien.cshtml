@@ -1,0 +1,285 @@
+﻿@model IEnumerable<WebQuanLySinhVien.Models.SinhVien>
+
+@{
+    ViewData["Title"] = "Danh sách thành viên";
+}
+
+<h1>Các thành viên của lớp @ViewData["TenLop"]</h1>
+
+<p>
+    <button class="btn btn-primary create-btn">Tạo mới</button>
+</p>
+<div class="row">
+    <div class="col-md-6">
+        <form class="d-flex align-items-center" asp-action="DSThanhVien" asp-controller="Lops" asp-route-malop="@ViewData["MaLop"]">
+            <div class="form-check form-check-radio">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="searchBy" value="ten"
+                    @(ViewData["searchBy"]?.ToString() == "ten" || string.IsNullOrEmpty(ViewData["searchBy"]?.ToString()) ? "checked" : "")>
+                    <span class="form-check-sign"></span>
+                    Tìm theo tên
+                </label>
+            </div>
+            <div class="form-check form-check-radio">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="radio" name="searchBy" value="email"
+                    @(ViewData["searchBy"]?.ToString() == "email" ? "checked" : "")>
+                    <span class="form-check-sign"></span>
+                    Tìm theo Email
+                </label>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <input name="searchString" class="form-control me-1" type="search" placeholder="Tìm kiếm" aria-label="Tìm kiếm" value="@ViewData["searchString"]" />
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <a asp-action="DSThanhVien" asp-controller="Lops" asp-route-malop="@ViewData["MaLop"]">Trở về danh sách đầy đủ</a>
+    </div>
+</div>
+<div class="content table-responsive table-full-width">
+    <table class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.HoTen)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.GioiTinh)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NgaySinh)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Sdt)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DiaChi)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.IdTkNavigation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.MaLopNavigation.TenLop)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (ViewData["GiangVien"] != null)
+            {
+                var gv = (GiangVien)ViewData["GiangVien"];
+                <tr class="success">
+                    <td>
+                        @gv.HoTen
+                    </td>
+                    <td>
+                        @gv.GioiTinh
+                    </td>
+                    <td>
+                        @gv.NgaySinh
+                    </td>
+                    <td>
+                        @gv.Sdt
+                    </td>
+                    <td>
+                        @gv.DiaChi
+                    </td>
+                    <td>
+                        @gv.Email
+                    </td>
+                    <td>
+                        @gv.IdTk
+                    </td>
+                    <td>
+                        @ViewData["TenLop"]
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+            }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HoTen)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GioiTinh)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NgaySinh)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Sdt)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DiaChi)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.IdTkNavigation.IdTk)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaLopNavigation.TenLop)
+                    </td>
+                    <td>
+                        <button class="btn btn-primary edit-btn" data-id="@item.MaSv">Sửa</button>
+                        <button class="btn btn-primary"><a asp-controller="SinhViens" asp-action="QuanLy" asp-route-id="@item.MaSv">Quản lý</a></button>
+                        <button class="btn btn-danger delete-btn" data-id="@item.MaSv">Xóa</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<div class="fixed-table-pagination">
+    <div class="pull-left pagination-detail">
+        <span class="pagination-info">
+            Hiển thị @((ViewBag.CurrentPage - 1) * ViewBag.PageSize + 1) đến @Math.Min(ViewBag.CurrentPage * ViewBag.PageSize, ViewBag.TotalItems)
+        </span>
+        <span class="page-list">
+            <span class="btn-group dropup">
+                <button type="button" class="btn btn-outline dropdown-toggle" data-toggle="dropdown">
+                    <span class="page-size">@ViewBag.PageSize</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    @{
+                        var pageSizes = new[] { 5, 10, 25, 50 };
+                        foreach (var size in pageSizes)
+                        {
+                            <li class="@(size == ViewBag.PageSize ? "active" : "")">
+                                <a href="@Url.Action("DSThanhVien", new {
+                                    page = 1,
+                                    pageSize = size,
+                                    searchBy = ViewData["searchBy"],
+                                    searchString = ViewData["searchString"],
+                                    malop = ViewData["MaLop"]
+                                })">@size</a>
+                            </li>
+                        }
+                    }
+                </ul>
+            </span> dòng/trang
+        </span>
+    </div>
+    <div class="pull-right pagination">
+        <ul class="pagination">
+            @{
+                int currentPage = ViewBag.CurrentPage;
+                int totalPages = ViewBag.TotalPages;
+                string searchBy = ViewData["searchBy"]?.ToString();
+                string searchString = ViewData["searchString"]?.ToString();
+
+                // Nút đầu trang
+                <li class="page-first @(currentPage == 1 ? "disabled" : "")">
+                    <a href="@Url.Action("DSThanhVien", new {
+                        page = 1,
+                        pageSize = ViewBag.PageSize,
+                        searchBy = searchBy,
+                        searchString = searchString,
+                        malop = ViewData["MaLop"]
+                    })">«</a>
+                </li>
+
+                // Nút trang trước
+                <li class="page-pre @(currentPage == 1 ? "disabled" : "")">
+                    <a href="@Url.Action("DSThanhVien", new {
+                        page = currentPage - 1,
+                        pageSize = ViewBag.PageSize,
+                        searchBy = searchBy,
+                        searchString = searchString,
+                        malop = ViewData["MaLop"]
+                    })">‹</a>
+                </li>
+
+                // Các nút trang
+                int startPage = Math.Max(1, currentPage - 2);
+                int endPage = Math.Min(totalPages, currentPage + 2);
+
+                for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-number @(i == currentPage ? "active" : "")">
+                        <a href="@Url.Action("DSThanhVien", new {
+                            page = i,
+                            pageSize = ViewBag.PageSize,
+                            searchBy = searchBy,
+                            searchString = searchString,
+                        malop = ViewData["MaLop"]
+                        })">@i</a>
+                    </li>
+                }
+
+                // Nút trang sau
+                <li class="page-next @(currentPage == totalPages ? "disabled" : "")">
+                    <a href="@Url.Action("DSThanhVien", new {
+                        page = currentPage + 1,
+                        pageSize = ViewBag.PageSize,
+                        searchBy = searchBy,
+                        searchString = searchString,
+                        malop = ViewData["MaLop"]
+                    })">›</a>
+                </li>
+
+                // Nút cuối trang
+                <li class="page-last @(currentPage == totalPages ? "disabled" : "")">
+                    <a href="@Url.Action("DSThanhVien", new {
+                        page = totalPages,
+                        pageSize = ViewBag.PageSize,
+                        searchBy = searchBy,
+                        searchString = searchString,
+                        malop = ViewData["MaLop"]
+                    })">»</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        // Xử lý sửa
+        $('.edit-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/SinhViens/Edit/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Sửa thông tin');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý nút Create
+        $('.create-btn').click(function() {
+            $.get('/SinhViens/Create', function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Thêm mới');
+                $('#actionModal').modal('show');
+            });
+        });
+
+        // Xử lý xóa
+        $('.delete-btn').click(function() {
+            var id = $(this).data('id');
+            $.get(`/SinhViens/Delete/${id}`, function(data) {
+                $('#modalBody').html(data);
+                $('#actionModal .modal-title').text('Xác nhận xóa');
+                $('#actionModal').modal('show');
+            });
+        });
+    });
+</script>

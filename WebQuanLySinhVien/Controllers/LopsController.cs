@@ -214,6 +214,47 @@ namespace WebQuanLySinhVien.Controllers
             }
         }
 
+        public async Task<IActionResult> DSThanhVien(string searchString, string searchBy, string malop, int page = 1, int pageSize = 10)
+        {
+            var sinhviens = _context.SinhViens.Include(n => n.MaLopNavigation).Include(n => n.IdTkNavigation).AsQueryable();
+
+            if (!String.IsNullOrEmpty(malop))
+            {
+                sinhviens = sinhviens.Where(s => s.MaLop.Contains(malop));
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                if (searchBy == "ten")
+                    sinhviens = sinhviens.Where(s => s.HoTen.Contains(searchString));
+                else
+                    sinhviens = sinhviens.Where(s => s.Email.Contains(searchString));
+            }
+            // Tính toán phân trang
+            var totalItems = await sinhviens.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+            var gv = _context.Lops.Where(l => l.MaLop == malop).Select(l => l.MaGvNavigation).FirstOrDefault();
+
+            var items = await sinhviens
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewData["TenLop"] = _context.Lops.Where(k => k.MaLop == malop).Select(k => k.TenLop).FirstOrDefault();
+            ViewData["MaLop"] = malop;
+            ViewData["searchBy"] = searchBy;
+            ViewData["searchString"] = searchString;
+            ViewData["GiangVien"] = gv;
+
+            return View(items);
+            //var quanLySinhVienContext = _context.Nganhs.Include(n => n.MaKhoaNavigation);
+            //return View(await quanLySinhVienContext.ToListAsync());
+        }
+
         private bool LopExists(string id)
         {
             return _context.Lops.Any(e => e.MaLop == id);

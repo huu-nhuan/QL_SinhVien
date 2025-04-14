@@ -49,7 +49,7 @@
             </td>
             <td>
                 <button class="btn btn-primary edit-btn" data-id="@item.MaNganh">Sửa</button>
-                <button class="btn btn-primary"><a asp-action="Details" asp-route-id="@item.MaNganh">Chi tiết</a></button>
+                    <button class="btn btn-primary"><a asp-action="DSHocPhan" asp-controller="Nganhs" asp-route-manganh="@item.MaNganh">Chi tiết</a></button>
                 <button class="btn btn-danger delete-btn" data-id="@item.MaNganh">Xóa</button>
             </td>
         </tr>

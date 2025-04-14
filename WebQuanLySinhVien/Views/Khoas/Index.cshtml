@@ -46,7 +46,7 @@
             <td>
                 @* <button class="btn btn-primary"> <a asp-action="Edit" asp-route-id="@item.MaKhoa">Sửa</a></button> *@
                 <button class="btn btn-primary edit-btn" data-id="@item.MaKhoa">Sửa</button>
-                <button class="btn btn-primary"> <a asp-action="Details" asp-route-id="@item.MaKhoa">Chi tiết</a></button>
+                <button class="btn btn-primary"> <a asp-action="DSNganh" asp-route-makhoa="@item.MaKhoa">Chi tiết</a></button>
                 @* <button class="btn btn-danger"> <a asp-action="Delete" asp-route-id="@item.MaKhoa">Xóa</a></button>    *@
                 <button class="btn btn-danger delete-btn" data-id="@item.MaKhoa">Xóa</button>
             </td>

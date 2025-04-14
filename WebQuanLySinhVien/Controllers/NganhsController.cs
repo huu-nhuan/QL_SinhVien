@@ -206,6 +206,40 @@ namespace WebQuanLySinhVien.Controllers
             }
         }
 
+        public async Task<IActionResult> DSHocPhan(string searchString, string manganh, int page = 1, int pageSize = 10)
+        {
+            var hocphans = _context.Hocphans.Include(h => h.MaNganhNavigation).AsQueryable();
+
+            if (!String.IsNullOrEmpty(manganh))
+            {
+                hocphans = hocphans.Where(s => s.MaNganh.Contains(manganh));
+            }
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                hocphans = hocphans.Where(s => s.TenHp.Contains(searchString));
+            }
+            // Tính toán phân trang
+            var totalItems = await hocphans.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var items = await hocphans
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalItems = totalItems;
+            ViewData["TenNganh"] = _context.Nganhs.Where(k =>k.MaNganh == manganh).Select(k => k.TenNganh).FirstOrDefault();
+            ViewData["MaNganh"] = manganh;
+            ViewData["searchString"] = searchString;
+
+            return View(items);
+            //var quanLySinhVienContext = _context.Nganhs.Include(n => n.MaKhoaNavigation);
+            //return View(await quanLySinhVienContext.ToListAsync());
+        }
+
         private bool NganhExists(string id)
         {
             return _context.Nganhs.Any(e => e.MaNganh == id);
