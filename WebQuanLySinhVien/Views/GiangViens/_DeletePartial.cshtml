@@ -11,7 +11,7 @@
             @Html.DisplayNameFor(model => model.HoTen)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.HoTen)
+            @(Model.HoTen != null ? Html.DisplayFor(model => model.HoTen) : "Không xác định")
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.GioiTinh)
@@ -23,19 +23,19 @@
             @Html.DisplayNameFor(model => model.NgaySinh)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.NgaySinh)
+            @(Model.NgaySinh != null ? Html.DisplayFor(model => model.NgaySinh) : "Không xác định")
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.Sdt)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.Sdt)
+            @(Model.Sdt != null ? Html.DisplayFor(model => model.Sdt) : "Không xác định")
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.DiaChi)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.DiaChi)
+            @(Model.DiaChi != null ? Html.DisplayFor(model => model.DiaChi) : "Không xác định")
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.Email)
@@ -46,8 +46,8 @@
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.IdTkNavigation)
         </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.IdTkNavigation.IdTk)
+        <dd class="col-sm-8">
+            @(Model.IdTk != null ? Html.DisplayFor(model => model.IdTkNavigation.IdTk) : "Không xác định")
         </dd>
     </dl>
 

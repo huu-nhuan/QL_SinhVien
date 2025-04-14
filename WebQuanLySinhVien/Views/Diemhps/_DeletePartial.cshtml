@@ -11,7 +11,7 @@
             @Html.DisplayNameFor(model => model.DiemHp)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.DiemHp)
+            @(Model.DiemHp != null ? Html.DisplayFor(model => model.DiemHp) : "Không xác định")
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MaHpNavigation)

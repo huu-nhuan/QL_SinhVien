@@ -23,7 +23,7 @@
             @Html.DisplayNameFor(model => model.NgayNhapHoc)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.NgayNhapHoc)
+            @(Model.NgayNhapHoc != null ? Html.DisplayFor(model => model.NgayNhapHoc) : "Không xác định")
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.NgayTotNghiep)
@@ -47,7 +47,7 @@
             @Html.DisplayNameFor(model => model.GhiChu)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.GhiChu)
+            @(Model.GhiChu != null ? Html.DisplayFor(model => model.GhiChu) : "Không xác định")
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.NgayCapNhat)

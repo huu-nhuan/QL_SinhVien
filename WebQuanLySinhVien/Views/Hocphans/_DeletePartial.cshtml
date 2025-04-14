@@ -11,7 +11,7 @@
             @Html.DisplayNameFor(model => model.TenHp)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.TenHp)
+            @(Model.TenHp != null ? Html.DisplayFor(model => model.TenHp) : "Không xác định")
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.SoTc)
@@ -23,13 +23,13 @@
             @Html.DisplayNameFor(model => model.HocKy)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.HocKy)
+            @(Model.HocKy != null ? Html.DisplayFor(model => model.HocKy) : "Không xác định")
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.MaNganhNavigation)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.MaNganhNavigation.MaNganh)
+            @(Model.MaNganh != null ? Html.DisplayFor(model => model.MaNganhNavigation.MaNganh) : "Không xác định")
         </dd>
     </dl>
 

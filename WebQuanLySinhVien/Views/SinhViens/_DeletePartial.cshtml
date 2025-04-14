@@ -23,7 +23,7 @@
             @Html.DisplayNameFor(model => model.NgaySinh)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.NgaySinh)
+            @(Model.NgaySinh != null ? Html.DisplayFor(model => model.NgaySinh) : "Không xác định")
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.Sdt)
@@ -35,7 +35,7 @@
             @Html.DisplayNameFor(model => model.DiaChi)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.DiaChi)
+            @(Model.DiaChi != null ? Html.DisplayFor(model => model.DiaChi) : "Không xác định")
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.Email)
@@ -47,7 +47,7 @@
             @Html.DisplayNameFor(model => model.IdTkNavigation)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.IdTkNavigation.IdTk)
+            @(Model.IdTk != null ? Html.DisplayFor(model => model.IdTkNavigation.IdTk) : "Không xác định")
         </dd>
         <dt class="col-sm-4">
             @Html.DisplayNameFor(model => model.MaLopNavigation)
