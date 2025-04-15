@@ -166,14 +166,14 @@
 
 		chart.on('created', function() {
 			var legendContainer = document.getElementById('legend');
-			var legendContainer2 = document.getElementById('legend2');
+
 			if (!legendContainer) {
 				console.error("Lỗi: Không tìm thấy phần tử #legend");
 				return;
 			}
 
 			legendContainer.innerHTML = ''; // Xóa nội dung cũ
-			legendContainer2.innerHTML = '';
+
 
 			var slices = document.querySelectorAll('.ct-slice-pie'); 
 			slices.forEach((slice, index) => {
@@ -184,12 +184,10 @@
 				legendItem.className = 'legend-item';
 				legendItem.innerHTML = `<i class="fa fa-circle" style="color:${color};"></i> ${label}`;
 
-				var legendItem2 = document.createElement('div');
-				legendItem2.className = 'legend-item';
-				legendItem2.innerHTML = `<i class="fa fa-circle" style="color:${color};"></i> ${label}`;
+
 
 				legendContainer.appendChild(legendItem);
-				legendContainer2.appendChild(legendItem2);
+
 			});
 		});
 
@@ -249,27 +247,60 @@
 	// Tìm giá trị lớn nhất
 		const giaTriLonNhat = Math.max(...tatCaDiem);
 
-		var dataSales = {
-		labels: ['0 điểm', '1 điểm', '2 điểm', '3 điểm', '4 điểm', '5 điểm', '6 điểm', '7 điểm', '8 điểm', '9 điểm', '10 điểm'],
-		series: mangCacDiem
-		};
-				var dataSales = {
-		  labels: ['0 điểm', '1 điểm', '2 điểm', '3 điểm', '4 điểm', '5 điểm', '6 điểm', '7 điểm', '8 điểm', '9 điểm', '10 điểm'],
-		  series: mangCacDiem
-	  
-		};
+			const legendDiv = document.getElementById('legend2');
+		legendDiv.innerHTML = '';
 
-		var optionsSales = 
-		{
-			lineSmooth: false,
-				axisY: {
-				offset: 40
-			},
-			low: 0,
-			high: giaTriLonNhat
-		};
+		// Biến lưu học phần đang chọn
+		let currentActiveLegend = null;
 
-		Chartist.Line('#chartSales', dataSales, optionsSales);
+		dataList.forEach((item, index) => {
+			const legendItem = document.createElement('span');
+			legendItem.innerText = item.MaHP;
+			legendItem.classList.add('custom-legend-item');
+			legendItem.dataset.index = index;
+
+			// Tạo chấm tròn phía trước text
+			// const dot = document.createElement('span');
+			// dot.classList.add('legend-dot');
+			// //dot.style.backgroundColor = getColor(index); // Hàm getColor lấy màu theo index
+
+			// legendItem.prepend(dot);
+
+			legendItem.addEventListener('click', () => {
+				const selectedData = {
+					labels: ['0 điểm', '1 điểm', '2 điểm', '3 điểm', '4 điểm', '5 điểm', '6 điểm', '7 điểm', '8 điểm', '9 điểm', '10 điểm'],
+					series: [item.DanhSachSoLuongTheoDiem]
+				};
+				const options = {
+					lineSmooth: false,
+					axisY: {
+						offset: 40
+					},
+					low: 0,
+					high: giaTriLonNhat
+				};
+
+				Chartist.Line('#chartSales', selectedData, options);
+
+				// Highlight học phần đang chọn
+				if (currentActiveLegend) {
+					currentActiveLegend.classList.remove('active-legend');
+				}
+				legendItem.classList.add('active-legend');
+				currentActiveLegend = legendItem;
+			});
+
+			legendDiv.appendChild(legendItem);
+			function getColor(index) {
+				const colors = ['#ff6384', '#36a2eb', '#4bc0c0', '#9966ff', '#ff9f40'];
+				return colors[index % colors.length];
+			}
+
+			// Mặc định chọn phần tử đầu tiên
+			if (index === 0) {
+				setTimeout(() => legendItem.click(), 0);
+			}
+		});
 
 		//---------------------------------------------
 		//BIỂU ĐỒ CỘT
@@ -327,3 +358,41 @@
 	}
 </script>
 
+
+<style>
+	#legend2 {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 15px;
+		padding-top: 10px;
+	}
+
+	.custom-legend-item {
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		font-size: 14px;
+		color: #555;
+		padding: 5px 10px;
+		border-radius: 20px;
+		transition: background-color 0.2s ease;
+	}
+
+		.custom-legend-item:hover {
+			background-color: #f0f0f0;
+		}
+
+		.custom-legend-item.active-legend {
+			background-color: #dbeafe;
+			color: #1d4ed8;
+			font-weight: bold;
+		}
+
+	.legend-dot {
+		display: inline-block;
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		margin-right: 8px;
+	}
+</style>

@@ -41,3 +41,14 @@ iframe[name="fab"] {
     right: 32px !important;
 }
 
+/*---------------------------------------------*/
+
+#legend2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-top: 10px;
+}
+
+
+
