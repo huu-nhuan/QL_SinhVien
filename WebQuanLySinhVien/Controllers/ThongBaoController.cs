@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebQuanLySinhVien.Models;
 using WebQuanLySinhVien.Models.ViewModels;
 using WebQuanLySinhVien.email;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace WebQuanLySinhVien.Controllers
 {
@@ -47,6 +48,13 @@ namespace WebQuanLySinhVien.Controllers
                 selectedIDLop = mail_Infor.selectedIDLop
             };
             return View(mail);
+        }
+
+        public IActionResult DonXinNghi()
+        {
+            var gv = _context.GiangViens.ToList();
+            ViewBag.MaGV = new SelectList(gv, "email", "MaGV" + " - " + "HoTen") ;
+            return View();
         }
     }
 }
