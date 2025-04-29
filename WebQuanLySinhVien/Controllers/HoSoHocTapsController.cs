@@ -6,7 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using QuestPDF.Fluent;
+using QuestPDF.Infrastructure;
 using WebQuanLySinhVien.Models;
+using WebQuanLySinhVien.Models.ViewModels;
+using WebQuanLySinhVien.report;
 
 namespace WebQuanLySinhVien.Controllers
 {
@@ -345,6 +349,39 @@ namespace WebQuanLySinhVien.Controllers
                 }
             }
             return Json(new { success = false, message = "Cập nhật thất bại" });
+        }
+
+        public IActionResult XuatPDF(string masv)
+        {
+            var sv = _context.SinhViens.FirstOrDefault(s => s.MaSv == masv);
+            var hs = _context.HoSoHocTaps.FirstOrDefault(h => h.Id == sv.HoSo);
+            if (hs == null)
+            {
+                return RedirectToAction(nameof(DSHoSo), new { id = masv });
+            } 
+            var diem = _context.Diemhps.Where(d => d.MaSv == masv).Include(d => d.MaHpNavigation).ToList();
+            var lop = _context.Lops.Where(l => l.MaLop == sv.MaLop).FirstOrDefault();
+            var tengv = _context.GiangViens.Where(h => h.MaGv == lop.MaGv).Select(h => h.HoTen).FirstOrDefault();
+            var mahp = _context.Diemhps.Where(d => d.MaSv==masv).Select(d => d.MaHp).FirstOrDefault();
+            var tenKhoa = _context.Hocphans
+                .Where(hp => hp.MaHp == mahp)
+                .Join(_context.Nganhs, hp => hp.MaNganh, nganh => nganh.MaNganh, (hp, nganh) => nganh)
+                .Join(_context.Khoas, nganh => nganh.MaKhoa, khoa => khoa.MaKhoa, (nganh, khoa) => khoa.TenKhoa)
+                .FirstOrDefault();
+            var baocao = new BaoCaoVM
+            {
+                sinhvien = sv,
+                hoso = hs,
+                DSdiem = diem,
+                tenlop = lop.TenLop,
+                tenGV = tengv,
+                makhoa = tenKhoa
+            };
+            QuestPDF.Settings.License = LicenseType.Community;
+            var doc = new BaoCaoHS(baocao);
+            var pdfBytes = doc.GeneratePdf();
+
+            return File(pdfBytes, "application/pdf");
         }
 
         private bool IsForeignKeyViolation(DbUpdateException ex)

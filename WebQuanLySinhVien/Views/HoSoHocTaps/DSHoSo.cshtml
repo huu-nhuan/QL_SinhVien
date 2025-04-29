@@ -1,13 +1,20 @@
 ﻿@model IEnumerable<WebQuanLySinhVien.Models.HoSoHocTap>
 @{
     ViewData["Title"] = "Danh sách hồ sơ học tập";
+    var hasHoSo = Model != null && Model.Any();
 }
+<script>
+    const hoSoTonTai = @hasHoSo.ToString().ToLower(); // true hoặc false
+</script>
 <h1>Danh sách hồ sơ</h1>
 <h4 class="card-title">@ViewData["hoten"]</h4>
 <p class="card-category">Mã số sinh viên: @ViewData["masv"]</p>
 <p style="display: flex; gap: 20px;">
     <button class="btn btn-primary create-btn" data-id="@ViewData["masv"]">thêm hồ sơ mới</button>
     <button class="btn btn-success useid-btn" >Áp dụng</button>
+    <button class="btn btn-primary" onclick="xuatPdf('@ViewData["masv"]')">
+        Xuất PDF
+    </button>
 </p>
 <table class="table">
     <thead>
@@ -152,6 +159,21 @@
         }
     });
 </script>
+<script>
+    function xuatPdf(masv) {
+        if (!hoSoTonTai) {
+            swal({
+                icon: 'error',
+                title: 'Không có dữ liệu',
+                text: 'Không tìm thấy hồ sơ học tập để xuất PDF.'
+            });
+            return;
+        }      
+        const url = `/HoSoHocTaps/XuatPDF?masv=${encodeURIComponent(masv)}`;
+        window.open(url, '_blank');
+    }
+</script>
+
 <style>
     tr.selected {
         background-color: #85cae0;
