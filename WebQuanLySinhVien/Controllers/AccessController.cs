@@ -38,9 +38,9 @@ namespace WebQuanLySinhVien.Controllers
         {
             if (HttpContext.Session.GetString("TenDangNhap") == null)
             {
-                var u = db.Taikhoans.Where(x => x.TenDangNhap.Equals(tk.TenDangNhap) 
-                && x.MatKhau.Equals(tk.MatKhau)).FirstOrDefault();
-                if (u != null)
+                var u = db.Taikhoans.FirstOrDefault(x => x.TenDangNhap == tk.TenDangNhap);
+
+                if (u != null && BCrypt.Net.BCrypt.Verify(tk.MatKhau, u.MatKhau))
                 {
                     HttpContext.Session.SetString("TenDangNhap", u.TenDangNhap.ToString());
                     var claims = new List<Claim>
@@ -95,6 +95,7 @@ namespace WebQuanLySinhVien.Controllers
                 }    
                 //tk.IdTk = TaoID();
                 tk.VaiTro = 2;
+                tk.MatKhau = BCrypt.Net.BCrypt.HashPassword(tk.MatKhau);
                 db.Taikhoans.Add(tk);
                 db.SaveChanges();
                 gv.IdTk = db.Taikhoans.OrderBy(i=>i.IdTk).Select(i=>i.IdTk).LastOrDefault();
@@ -109,6 +110,7 @@ namespace WebQuanLySinhVien.Controllers
                 }
                 //tk.IdTk = TaoID();
                 tk.VaiTro = 3;
+                tk.MatKhau = BCrypt.Net.BCrypt.HashPassword(tk.MatKhau);
                 db.Taikhoans.Add(tk);
                 db.SaveChanges();
                 sv.IdTk = db.Taikhoans.OrderBy(i => i.IdTk).Select(i => i.IdTk).LastOrDefault();
@@ -154,7 +156,7 @@ namespace WebQuanLySinhVien.Controllers
             else if (gv != null && gv.IdTk != null)
             {
                 var tk = db.Taikhoans.Where(x => x.IdTk.Equals(gv.IdTk)).FirstOrDefault();
-                tk.MatKhau = newpass;
+                tk.MatKhau = BCrypt.Net.BCrypt.HashPassword(newpass);
                 HttpContext.Session.Remove("MaXacNhan");
                 HttpContext.Session.Remove("email");
                 db.SaveChanges();
@@ -162,7 +164,7 @@ namespace WebQuanLySinhVien.Controllers
             else if (sv != null && sv.IdTk != null)
             {
                 var tk = db.Taikhoans.Where(x => x.IdTk.Equals(sv.IdTk)).FirstOrDefault();
-                tk.MatKhau = newpass;
+                tk.MatKhau = BCrypt.Net.BCrypt.HashPassword(newpass);
                 HttpContext.Session.Remove("MaXacNhan");
                 HttpContext.Session.Remove("email");
                 db.SaveChanges();

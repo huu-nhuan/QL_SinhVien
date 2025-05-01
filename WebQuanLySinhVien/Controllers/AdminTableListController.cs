@@ -10,6 +10,7 @@ using WebQuanLySinhVien.Models;
 using WebQuanLySinhVien.Models.ViewModels;
 using X.PagedList;
 using X.PagedList.Extensions;
+using BCrypt.Net;
 
 
 namespace WebQuanLySinhVien.Controllers
@@ -57,5 +58,22 @@ namespace WebQuanLySinhVien.Controllers
             };
             return View(viewModel);
         }
+        //public IActionResult EncryptPasswords()
+        //{
+        //    var users = _context.Taikhoans.ToList();
+
+        //    foreach (var user in users)
+        //    {
+        //        // Kiểm tra nếu mật khẩu chưa được mã hóa (BCrypt bắt đầu bằng "$2")
+        //        if (!user.MatKhau.StartsWith("$2"))
+        //        {
+        //            user.MatKhau = BCrypt.Net.BCrypt.HashPassword(user.MatKhau);
+        //        }
+        //    }
+
+        //    _context.SaveChanges();
+
+        //    return Content("Đã mã hóa mật khẩu thành công.");
+        //}
     }
 }
