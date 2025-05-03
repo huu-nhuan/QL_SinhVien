@@ -263,11 +263,21 @@ namespace WebQuanLySinhVien.Controllers
         }
         private bool emailExist(string email, string? id = null)
         {
+            bool existsInSinhVien;
+            bool existsInGiangVien;
+
             if (!string.IsNullOrEmpty(id))
             {
-                return _context.GiangViens.Any(e => e.Email == email && e.MaGv != id);
+                existsInSinhVien = _context.SinhViens.Any(e => e.Email == email);
+                existsInGiangVien = _context.GiangViens.Any(e => e.Email == email && e.MaGv != id);
             }
-            return _context.GiangViens.Any(e => e.Email == email);
+            else
+            {
+                existsInSinhVien = _context.SinhViens.Any(e => e.Email == email);
+                existsInGiangVien = _context.GiangViens.Any(e => e.Email == email);
+            }
+
+            return existsInSinhVien || existsInGiangVien;
         }
         private bool sdtlExist(string sdt, string? id = null)
         {
@@ -277,14 +287,21 @@ namespace WebQuanLySinhVien.Controllers
                 return false;
             }
 
+            bool existsInSinhVien;
+            bool existsInGiangVien;
+
             if (!string.IsNullOrEmpty(id))
             {
-                // Nếu đang cập nhật, chỉ kiểm tra trùng với người khác
-                return _context.GiangViens.Any(e => e.Sdt == sdt && e.MaGv != id);
+                existsInSinhVien = _context.SinhViens.Any(e => e.Sdt == sdt);
+                existsInGiangVien = _context.GiangViens.Any(e => e.Sdt == sdt && e.MaGv != id);
+            }
+            else
+            {
+                existsInSinhVien = _context.SinhViens.Any(e => e.Sdt == sdt);
+                existsInGiangVien = _context.GiangViens.Any(e => e.Sdt == sdt);
             }
 
-            // Nếu đang tạo mới, kiểm tra xem có ai có số này chưa
-            return _context.GiangViens.Any(e => e.Sdt == sdt);
+            return existsInSinhVien || existsInGiangVien;
         }
 
         private bool IsForeignKeyViolation(DbUpdateException ex)

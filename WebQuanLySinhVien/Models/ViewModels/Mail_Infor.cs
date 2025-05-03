@@ -6,5 +6,6 @@
         public string? selectedIDLop { get; set; }
         public string? TieuDe { get; set; }
         public string? NoiDung { get; set; }
+        public IFormFile? TepDinhKem { get; set; }
     }
 }

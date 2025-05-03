@@ -1,0 +1,72 @@
+﻿@model WebQuanLySinhVien.Models.ViewModels.XinVangHocViewModel
+@{
+    ViewData["Title"] = "Xin phép vắng học";
+}
+<div class="col-md-12">
+    <div class="card">
+        <div class="header">
+            <h4 class="title">Đơn xin vắng học</h4>
+        </div>
+        <div class="content">
+            <form asp-action="XinVangHoc" method="post">
+                <div class="form-group">
+                    <label>Giảng viên nhận đơn</label>
+                    <select asp-for="EmailGiangVien" asp-items="ViewBag.MaGV" class="form-control">
+                        <option value="">-- Chọn giảng viên --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mã số sinh viên</label>
+                    <input asp-for="MSSV" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>Họ và tên</label>
+                    <input asp-for="HoTen" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>Lớp</label>
+                    <input asp-for="Lop" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>Ngày nghỉ</label>
+                    <input asp-for="NgayNghi" type="date" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>Từ tiết</label>
+                    <input asp-for="TietBatDau" type="number" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>Đến tiết</label>
+                    <input asp-for="TietKetThuc" type="number" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label>Lý do</label>
+                    <textarea asp-for="LyDo" class="form-control" rows="4"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-fill">Gửi đơn</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @if (ViewData["Message"] != null)
+    {
+        <script>
+            swal("Thông báo", @Html.Raw(Json.Serialize(ViewData["Message"])), "success");
+        </script>
+    }
+    @if (ViewData["ThongBao"] != null)
+    {
+        <script>
+            swal("Thông báo", @Html.Raw(Json.Serialize(ViewData["ThongBao"])), "error");
+        </script>
+    }
+}

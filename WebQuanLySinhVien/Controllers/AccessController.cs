@@ -192,11 +192,12 @@ namespace WebQuanLySinhVien.Controllers
             string[] receiver = [email];
             var subject = "Mã xác nhận";
             var message = "Mã xác nhận của bạn là: " + HttpContext.Session.GetString("MaXacNhan");
+            string? fp = null;
 
             TempData["Email"] = email;
             HttpContext.Session.SetString("email", email);
 
-            _emailSender.SendEmailAsync(receiver, subject, message);
+            _emailSender.SendEmailAsync(receiver, subject, message, fp);
             return RedirectToAction("EmailConfirm", "Access");
         }
 

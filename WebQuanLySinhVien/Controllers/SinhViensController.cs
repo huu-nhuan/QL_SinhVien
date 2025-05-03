@@ -315,19 +315,40 @@ namespace WebQuanLySinhVien.Controllers
 
         private bool emailExist(string email, string? id = null)
         {
-            if(!string.IsNullOrEmpty(id))
+            bool existsInSinhVien;
+            bool existsInGiangVien;
+
+            if (!string.IsNullOrEmpty(id))
             {
-                return _context.SinhViens.Any(e => e.Email == email && e.MaSv != id);
-            }    
-            return _context.SinhViens.Any(e => e.Email == email);
+                existsInSinhVien = _context.SinhViens.Any(e => e.Email == email && e.MaSv != id);
+                existsInGiangVien = _context.GiangViens.Any(e => e.Email == email);
+            }
+            else
+            {
+                existsInSinhVien = _context.SinhViens.Any(e => e.Email == email);
+                existsInGiangVien = _context.GiangViens.Any(e => e.Email == email);
+            }
+
+            return existsInSinhVien || existsInGiangVien;
+
         }
         private bool sdtlExist(string sdt, string? id = null)
         {
+            bool existsInSinhVien;
+            bool existsInGiangVien;
+
             if (!string.IsNullOrEmpty(id))
             {
-                return _context.SinhViens.Any(e => e.Sdt == sdt && e.MaSv != id);
+                existsInSinhVien = _context.SinhViens.Any(e => e.Sdt == sdt && e.MaSv != id);
+                existsInGiangVien = _context.GiangViens.Any(e => e.Sdt == sdt);
             }
-            return _context.SinhViens.Any(e => e.Sdt == sdt);
+            else
+            {
+                existsInSinhVien = _context.SinhViens.Any(e => e.Sdt == sdt);
+                existsInGiangVien = _context.GiangViens.Any(e => e.Sdt == sdt);
+            }
+
+            return existsInSinhVien || existsInGiangVien;
         }
         private bool IsForeignKeyViolation(DbUpdateException ex)
         {
