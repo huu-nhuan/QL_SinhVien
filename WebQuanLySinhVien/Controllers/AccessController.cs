@@ -7,6 +7,7 @@ using WebQuanLySinhVien.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebQuanLySinhVien.Controllers
 {
@@ -42,12 +43,15 @@ namespace WebQuanLySinhVien.Controllers
 
                 if (u != null && BCrypt.Net.BCrypt.Verify(tk.MatKhau, u.MatKhau))
                 {
+                    var (hoTen, maSo) = await GetHoTenVaMaSoAsync(u);
                     HttpContext.Session.SetString("TenDangNhap", u.TenDangNhap.ToString());
                     var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, u.TenDangNhap),
                         new Claim("Id", u.IdTk.ToString()),
-                        new Claim("Role", u.VaiTro.ToString())  // Lưu vai trò vào Claims
+                        new Claim("Role", u.VaiTro.ToString()),
+                        new Claim("HoTen", hoTen),
+                        new Claim("MaSo", maSo)
                     };
 
                     var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -247,6 +251,38 @@ namespace WebQuanLySinhVien.Controllers
         {
             if (id == null) return false;
             return true;
+        }
+
+        private async Task<(string HoTen, string MaSo)> GetHoTenVaMaSoAsync(Taikhoan u)
+        {
+            string hoTen = "";
+            string maSo = "";
+
+            if (u.VaiTro == 1) // Admin
+            {
+                hoTen = "Quản trị viên";
+                maSo = "ADMIN";
+            }
+            else if (u.VaiTro == 2) // Giảng viên
+            {
+                var gv = await db.GiangViens.FirstOrDefaultAsync(x => x.IdTk == u.IdTk);
+                if (gv != null)
+                {
+                    hoTen = gv.HoTen ?? "";
+                    maSo = gv.MaGv;
+                }
+            }
+            else if (u.VaiTro == 3) // Sinh viên
+            {
+                var sv = await db.SinhViens.FirstOrDefaultAsync(x => x.IdTk == u.IdTk);
+                if (sv != null)
+                {
+                    hoTen = sv.HoTen ?? "";
+                    maSo = sv.MaSv;
+                }
+            }
+
+            return (hoTen, maSo);
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -23,25 +24,26 @@ namespace WebQuanLySinhVien.Controllers
         // GET: SinhViens
         public async Task<IActionResult> Index(string searchString, string searchBy, int page = 1, int pageSize = 10)
         {
+            var role = User.FindFirst("Role")?.Value;
+            var maSo = User.FindFirst("MaSo")?.Value;
             var quanLySinhVienContext = _context.SinhViens.Include(s => s.IdTkNavigation).Include(s => s.MaLopNavigation).AsQueryable();
 
-            if(!String.IsNullOrEmpty(searchString))
+            if (role == "2" && !string.IsNullOrEmpty(maSo))
+            {
+                quanLySinhVienContext = quanLySinhVienContext
+                    .Where(s => s.MaLopNavigation.MaGv == maSo);
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
             {
                 if(searchBy == "ten")
                 {
                     quanLySinhVienContext =  quanLySinhVienContext.Where(s => s.HoTen.Contains(searchString));
-                    //ViewData["searchString"] = searchString;
-                    //ViewData["searchBy"] = searchBy;
-                    //return View(quanLySinhVienContext);
                 }
                 else
                 {
                     quanLySinhVienContext =  quanLySinhVienContext.Where(s => s.Email.Contains(searchString));
-                    //ViewData["searchString"] = searchString;
-                    //ViewData["searchBy"] = searchBy;
-                    //return View(quanLySinhVienContext);
                 }
-                
             }
             // Tính toán phân trang
             var totalItems = await quanLySinhVienContext.CountAsync();
@@ -83,6 +85,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: SinhViens/Create
+        [Authorize(Policy = "GiangVienOrAdmin")]
         public IActionResult Create()
         {
             //var tk = _context.Taikhoans;
@@ -97,6 +100,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: SinhViens/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "GiangVienOrAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaSv,MaLop,HoTen,GioiTinh,NgaySinh,Sdt,DiaChi,IdTk,Email")] SinhVien sinhVien)
@@ -146,6 +150,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: SinhViens/Edit/5
+        [Authorize(Policy = "GiangVienOrAdmin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -183,6 +188,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: SinhViens/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "GiangVienOrAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("MaSv,MaLop,HoTen,GioiTinh,NgaySinh,Sdt,DiaChi,IdTk,Email")] SinhVien sinhVien)
@@ -224,6 +230,8 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: SinhViens/Delete/5
+
+        [Authorize(Policy = "GiangVienOrAdmin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -244,6 +252,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // POST: SinhViens/Delete/5
+        [Authorize(Policy = "GiangVienOrAdmin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -269,7 +278,8 @@ namespace WebQuanLySinhVien.Controllers
                 return Json(new { success = false, message = $"Lỗi cơ sở dữ liệu: {ex.Message}" });
             }
         }
-
+        
+        [Authorize(Policy = "GiangVienOrAdmin")]
         public async Task<IActionResult> QuanLy(string id)
         {
             if (id == null)

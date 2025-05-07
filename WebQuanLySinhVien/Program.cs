@@ -19,13 +19,16 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Home/Error"; 
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "1"));
-    options.AddPolicy("GiangVien", policy => policy.RequireClaim("Role", "2"));
-    options.AddPolicy("SinhVien", policy => policy.RequireClaim("Role", "3"));
-    options.AddPolicy("GiangVienOrAdmin", policy => policy.RequireClaim("Role", "1", "2"));
-});
+    builder.Services.AddAuthorization(options =>
+    {
+        options.AddPolicy("Admin", policy => policy.RequireClaim("Role", "1"));
+        options.AddPolicy("GiangVien", policy => policy.RequireClaim("Role", "2"));
+        options.AddPolicy("SinhVien", policy => policy.RequireClaim("Role", "3"));
+        options.AddPolicy("GiangVienOrAdmin", policy => policy.RequireClaim("Role", "1", "2"));
+        options.AddPolicy("SinhVienOrAdmin", policy => policy.RequireClaim("Role", "1", "3"));
+    });
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

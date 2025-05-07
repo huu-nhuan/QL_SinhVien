@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -83,6 +84,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: GiangViens/Create
+        [Authorize(Policy = "Admin")]
         public IActionResult Create()
         {
             ViewBag.IdTk = new SelectList(_context.Taikhoans.Where(t1 => !_context.SinhViens.Select(t2 => t2.IdTk).Contains(t1.IdTk)
@@ -93,6 +95,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: GiangViens/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaGv,HoTen,GioiTinh,NgaySinh,Sdt,DiaChi,IdTk,Email")] GiangVien giangVien)
@@ -140,6 +143,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: GiangViens/Edit/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -172,6 +176,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: GiangViens/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("MaGv,HoTen,GioiTinh,NgaySinh,Sdt,DiaChi,IdTk,Email")] GiangVien giangVien)
@@ -212,6 +217,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: GiangViens/Delete/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -231,6 +237,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // POST: GiangViens/Delete/5
+        [Authorize(Policy = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -67,6 +68,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Khoas/Create
+        [Authorize(Policy = "Admin")]
         public IActionResult Create()
         {
             return PartialView("_CreatePartial", new Khoa());
@@ -75,6 +77,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: Khoas/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaKhoa,TenKhoa")] Khoa khoa)
@@ -93,6 +96,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Khoas/Edit/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -111,6 +115,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: Khoas/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("MaKhoa,TenKhoa")] Khoa khoa)
@@ -146,6 +151,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Khoas/Delete/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -164,6 +170,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // POST: Khoas/Delete/5
+        [Authorize(Policy = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

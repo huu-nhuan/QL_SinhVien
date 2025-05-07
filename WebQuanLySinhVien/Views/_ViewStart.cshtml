@@ -1,3 +1,30 @@
-﻿@{
-    Layout = "_Layout";
-}
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var roleClaim = HttpContextAccessor.HttpContext.User.FindFirst("Role");
+    var role = roleClaim?.Value;
+
+    switch (role)
+    {
+        case "1": // Admin
+            Layout = "~/Views/Shared/_Layout.cshtml";
+            break;
+        case "2": // Giảng viên
+            Layout = "~/Views/Shared/_LayoutGiangVien.cshtml";
+            break;
+        case "3": // Sinh viên
+            Layout = "~/Views/Shared/_LayoutSinhVien.cshtml";
+            break;
+        default:
+            Layout = null; // fallback layout
+            break;
+    }
+    // if (role == "1")
+    // {
+    //     Layout = "_Layout";
+    // }
+    // else
+    // {
+    //     Layout = null; // Không dùng layout
+    // }
+}   

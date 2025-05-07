@@ -10,11 +10,17 @@
     <h4>Giảng viên</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.MaGv)
+        </dt>
+        <dd class="col-sm-10">
+            @(string.IsNullOrEmpty(Model.MaGv) ? "Chưa xác định" : Model.MaGv)
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.HoTen)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.HoTen)
+            @(string.IsNullOrEmpty(Model.HoTen) ? "Chưa xác định" : Model.HoTen)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.GioiTinh)
@@ -25,20 +31,20 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.NgaySinh)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NgaySinh)
+        <dd class="col-sm-10">
+            @(Model.NgaySinh.HasValue ? Model.NgaySinh.Value.ToString("dd/MM/yyyy") : "Chưa xác định")
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Sdt)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Sdt)
+            @(string.IsNullOrEmpty(Model.Sdt) ? "Chưa xác định" : Model.Sdt)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.DiaChi)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DiaChi)
+            @(string.IsNullOrEmpty(Model.DiaChi) ? "Chưa xác định" : Model.DiaChi)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Email)

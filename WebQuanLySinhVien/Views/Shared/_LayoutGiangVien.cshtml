@@ -1,0 +1,262 @@
+﻿@{
+    var hoTen = User.FindFirst("HoTen")?.Value;
+    var maSo = User.FindFirst("MaSo")?.Value;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WebQuanLySinhVien</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+    <meta name="viewport" content="width=device-width" />
+
+    <!--   Core JS Files   -->
+    <script src="../../template/assets/js/jquery.3.2.1.min.js" type="text/javascript"></script>
+    <script src="../../template/assets/js/bootstrap.min.js" type="text/javascript"></script>
+
+    <!--  more Plugin    -->
+    @* <script src="../../template/custom/tk.js"></script> *@
+    <link href="../../template/custom/iframe.css" rel="stylesheet" />
+    <link href="../../css/page.css" rel="stylesheet" />
+
+    <!--  Notifications Plugin    -->
+    @* <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script> *@
+    @* <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> *@
+    <script src="../../template/assets/js/bootstrap-notify.js"></script>
+    <script src="../../template/custom/sweetalert.min.js"></script>
+
+    <!--  Charts Plugin -->
+    <script src="../../template/assets/js/chartist.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chartist/dist/chartist.min.css">
+
+    <!-- Bootstrap core CSS     -->
+    <link href="../../template/assets/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Animation library for notifications   -->
+    <link href="../../template/assets/css/animate.min.css" rel="stylesheet" />
+
+    <!--  Light Bootstrap Table core CSS    -->
+    <link href="../../template/assets/css/light-bootstrap-dashboard.css?v=1.4.0" rel="stylesheet" />
+
+
+    @*     <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link href="../../template/assets/css/demo.css" rel="stylesheet" /> *@
+
+
+    <!--     Fonts and icons     -->
+    @* <link href="../../template/assets/css/font-awesome.min.css" rel="stylesheet"> *@
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="../../template/assets/css/all.min.css" rel="stylesheet" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="../../template/assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
+
+
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="sidebar" data-color="purple" data-image="../../template/assets/img/sidebar-5.jpg">
+
+            <!--
+
+                Tip 1: you can change the color of the sidebar using: data-color="blue | azure | green | orange | red | purple"
+                Tip 2: you can also add an image using data-image tag
+
+            -->
+
+            <div class="sidebar-wrapper">
+                <div class="logo">
+                    <a class="simple-text" asp-area="" asp-controller="Home" asp-action="Index">
+                        QLSV
+                    </a>
+                </div>
+
+                <ul class="nav">
+                    @* <li class="active"> *@
+                    <li>
+                        <a asp-area="" asp-controller="Home" asp-action="Index">
+                            <i class="pe-7s-home"></i>
+                            <p>Trang chủ</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="UserProfile" asp-action="Profile">
+                            <i class="pe-7s-user"></i>
+                            <p>Profile</p>
+                        </a>
+                    </li>
+                    <li>
+
+                        <a class="nav-link" data-toggle="collapse" href="#formsExamples">
+                            <i class="pe-7s-note2"></i>
+                            <p>
+                                Danh sách bảng
+                                <b class="caret"></b>
+                            </p>
+                        </a>
+                        <div class="collapse " id="formsExamples">
+                            <ul class="nav">
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Khoas" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Khoa</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Nganhs" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Ngành</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Hocphans" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Học Phần</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="GiangViens" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Giảng Viên</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="Lops" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Lớp</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a asp-area="" asp-controller="SinhViens" asp-action="Index">
+                                        <span class="sidebar-mini">Danh Sách</span>
+                                        <span class="sidebar-normal">Sinh Viên</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="ThongKe" asp-action="Index">
+                            <i class="pe-7s-graph"></i>
+                            <p>Thống kê</p>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="" asp-controller="ThongBao" asp-action="Index">
+                            <i class="pe-7s-science"></i>
+                            <p>Gửi Email</p>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-area="" asp-controller="Home" asp-action="Privacy">
+                            <i class="pe-7s-key"></i>
+                            <p>Privacy</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="main-panel">
+            <nav class="navbar navbar-default navbar-fixed">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigation-example-2">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                    </div>
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a>
+                                    <p>@hoTen</p>
+                                </a>
+                            </li>
+                            <li>
+                                <a asp-area="" asp-controller="Access" asp-action="Logout">
+                                    <p>Đăng xuất</p>
+                                </a>
+                            </li>
+                            <li class="separator hidden-lg"></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+
+            <div class="content">
+                <div class="container-fluid">
+                    @RenderBody()
+
+                </div>
+            </div>
+
+
+            <footer class="footer">
+                <div class="container-fluid">
+                    <p class="copyright pull-right">
+                        &copy; <script>document.write(new Date().getFullYear())</script> <a href="http://www.creative-tim.com">Creative Tim</a>, made with love for a better web
+                    </p>
+                </div>
+
+            </footer>
+
+        </div>
+    </div>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <div class="modal fade" id="actionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span inert>&times;</span>
+                    </button>
+                    <h5 class="modal-title text-center" id="exampleModalLabel">Thao tác</h5>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Nội dung form sẽ được load vào đây -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.botpress.cloud/webchat/v2.3/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2025/04/08/13/20250408130302-219ZQHJT.js"></script>
+</body>
+
+
+<!--  Google Maps Plugin    -->
+@* <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE"></script> *@
+
+<!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
+<script src="../../template/assets/js/light-bootstrap-dashboard.js?v=1.4.0"></script>
+
+<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
+@* <script src="../../template/assets/js/demo.js"></script> *@
+
+@* <script type="text/javascript">
+    	$(document).ready(function(){
+
+        	demo.initChartist();
+
+        	$.notify({
+            	icon: 'pe-7s-gift',
+            	message: "Welcome to <b>Light Bootstrap Dashboard</b> - a beautiful freebie for every web developer."
+
+            },{
+                type: 'info',
+                timer: 4000
+            });
+
+    	});
+	</script> *@
+
+</html>

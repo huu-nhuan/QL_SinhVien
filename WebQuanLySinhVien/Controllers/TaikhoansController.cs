@@ -82,6 +82,7 @@ namespace WebQuanLySinhVien.Controllers
             {
                 return Json(new { success = false, message = "Tên đăng nhập này đã tồn tại" });
             }
+            taikhoan.MatKhau = BCrypt.Net.BCrypt.HashPassword(taikhoan.MatKhau); // mã hóa mk
             if (ModelState.IsValid)
             {
                 try
@@ -148,6 +149,7 @@ namespace WebQuanLySinhVien.Controllers
             {
                 try
                 {
+                    taikhoan.MatKhau = BCrypt.Net.BCrypt.HashPassword(taikhoan.MatKhau);
                     _context.Update(taikhoan);
                     await _context.SaveChangesAsync();
                     return Json(new { success = true, message = "Cập nhật thành công" });

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -69,6 +70,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Nganhs/Create
+        [Authorize(Policy = "Admin")]
         public IActionResult Create()
         {
             ViewBag.MaKhoa = new SelectList(_context.Khoas, "MaKhoa", "MaKhoa");
@@ -78,6 +80,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: Nganhs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaNganh,TenNganh,MaKhoa")] Nganh nganh)
@@ -109,6 +112,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Nganhs/Edit/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -128,6 +132,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: Nganhs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("MaNganh,TenNganh,MaKhoa")] Nganh nganh)
@@ -161,6 +166,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Nganhs/Delete/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -180,6 +186,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // POST: Nganhs/Delete/5
+        [Authorize(Policy = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

@@ -61,7 +61,7 @@ namespace WebQuanLySinhVien.Controllers
             }
             else if (gv != null)
             {
-                var patch = _context.Taikhoans.Where(i => i.IdTk == gv.IdTk).Select(x => x.ImagePath).ToString();
+                var patch = _context.Taikhoans.Where(i => i.IdTk == gv.IdTk).Select(x => x.ImagePath).FirstOrDefault();
                 var viewModel = new UserProfile
                 {
                     DanhSachUser = danhSachUser,

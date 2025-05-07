@@ -4,6 +4,7 @@ using WebQuanLySinhVien.Models;
 using WebQuanLySinhVien.Models.ViewModels;
 using WebQuanLySinhVien.email;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Net.Mail;
 
 namespace WebQuanLySinhVien.Controllers
 {
@@ -37,9 +38,10 @@ namespace WebQuanLySinhVien.Controllers
                 string tieude = mail_Infor.TieuDe ?? "Không có tiêu đề";
                 string noidung = mail_Infor.NoiDung ?? "Không có nội dung";
                 string? filePath = null;
+
+                // Lưu file tạm 
                 if (mail_Infor.TepDinhKem != null && mail_Infor.TepDinhKem.Length > 0)
                 {
-                    // Lưu file tạm
                     var tempPath = Path.Combine(Path.GetTempPath(), mail_Infor.TepDinhKem.FileName);
                     using (var stream = new FileStream(tempPath, FileMode.Create))
                     {
@@ -48,14 +50,36 @@ namespace WebQuanLySinhVien.Controllers
                     filePath = tempPath;
                 }
 
-                string[] danhSachEmail = _context.SinhViens.Where(sv => sv.MaLop == mail_Infor.selectedIDLop).Select(sv => sv.Email).ToArray(); //lấy danh sách email của các sv trong lớp
-                await _emailSender.SendEmailAsync(danhSachEmail, tieude, noidung, filePath);
-                ViewData["Message"] = "Gửi mail thành công";
+                // Lấy danh sách email
+                string[] danhSachEmail = _context.SinhViens
+                    .Where(sv => sv.MaLop == mail_Infor.selectedIDLop)
+                    .Select(sv => sv.Email)
+                    .ToArray();
+
+                // Kiểm tra email hợp lệ
+                var validEmails = danhSachEmail.Where(e => IsValidEmail(e)).ToList();
+                var invalidEmails = danhSachEmail.Except(validEmails).ToList();
+
+                if (validEmails.Count == 0)
+                {
+                    ViewData["ThongBao"] = "Không có email hợp lệ để gửi.";
+                }
+                else
+                {
+                    await _emailSender.SendEmailAsync(validEmails.ToArray(), tieude, noidung, filePath);
+                    ViewData["Message"] = "Gửi mail thành công";
+
+                    if (invalidEmails.Count > 0)
+                    {
+                        ViewData["ThongBao"] = "Một số email không hợp lệ và đã bị bỏ qua: " + string.Join(", ", invalidEmails);
+                    }
+                }
             }
             else
             {
-                ViewData["ThongBao"] = "Hãy chọn lớp để gửi trước";
+                ViewData["ThongBao"] = "Hãy chọn lớp để gửi trước.";
             }
+
             Mail_Infor mail = new Mail_Infor
             {
                 DanhSachLop = _context.Lops.OrderBy(l => l.MaLop).Select(l => l.MaLop).ToList(),
@@ -63,7 +87,7 @@ namespace WebQuanLySinhVien.Controllers
             };
             return View(mail);
         }
-
+        [Authorize(Policy = "SinhVienOrAdmin")]
         [HttpGet]
         public IActionResult XinVangHoc()
         {
@@ -76,7 +100,7 @@ namespace WebQuanLySinhVien.Controllers
             ViewBag.MaGV = new SelectList(gv, "Email", "DisplayName");
             return View();
         }
-
+        [Authorize(Policy = "SinhVienOrAdmin")]
         [HttpPost]
         public async Task<IActionResult> XinVangHoc(XinVangHocViewModel model)
         {
@@ -101,16 +125,35 @@ namespace WebQuanLySinhVien.Controllers
                 ViewData["ThongBao"] = Newtonsoft.Json.JsonConvert.SerializeObject(errorList);
                 return View();//Json(new { success = false, message = Newtonsoft.Json.JsonConvert.SerializeObject(errorList) });
             }
-            if (model.EmailGiangVien != null)
+            if (!string.IsNullOrWhiteSpace(model.EmailGiangVien))
             {
+                if (!IsValidEmail(model.EmailGiangVien))
+                {
+                    ViewData["ThongBao"] = "Địa chỉ email giảng viên không hợp lệ, hãy liên hệ với addmin về vấn đề này!";
+                    return View();
+                }
+
                 await _emailSender.SendDoXinNghiAsync(model);
                 ViewData["Message"] = "Gửi mail thành công";
             }
             else
             {
-                ViewData["ThongBao"] = "Hãy chọn giảng viên để gửi trước";
+                ViewData["ThongBao"] = "Hãy chọn giảng viên để gửi trước.";
             }
             return View();
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

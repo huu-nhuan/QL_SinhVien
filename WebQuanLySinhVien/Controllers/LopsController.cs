@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -68,6 +69,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Lops/Create
+        [Authorize(Policy = "Admin")]
         public IActionResult Create()
         {
             ViewBag.MaGv = new SelectList(_context.GiangViens, "MaGv", "MaGv");
@@ -77,6 +79,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: Lops/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaLop,TenLop,MaGv,NamNhapHoc")] Lop lop)
@@ -117,6 +120,8 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Lops/Edit/5
+
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -136,6 +141,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: Lops/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("MaLop,TenLop,MaGv,NamNhapHoc")] Lop lop)
@@ -170,6 +176,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Lops/Delete/5
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -189,6 +196,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // POST: Lops/Delete/5
+        [Authorize(Policy = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)

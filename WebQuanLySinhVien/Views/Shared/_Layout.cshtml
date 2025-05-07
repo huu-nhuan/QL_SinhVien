@@ -148,37 +148,38 @@
                             </ul>
                         </div>
                 </li>
-                <li >
-                        <a class="nav-link" data-toggle="collapse" href="#formsEmail">
-                            <i class="pe-7s-graph"></i>
-                            <p>
-                                Gửi email
-                                <b class="caret"></b>
-                            </p>
-                        </a>
-                        <div class="collapse " id="formsEmail">
-                            <ul class="nav">
-                                <li class="nav-item ">
-                                    <a asp-area="" asp-controller="ThongBao" asp-action="Index">
-                                        <span class="sidebar-mini">Gửi</span>
-                                        <span class="sidebar-normal">thông báo</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item ">
-                                    <a asp-area="" asp-controller="ThongBao" asp-action="XinVangHoc">
-                                        <span class="sidebar-mini">Gửi</span>
-                                        <span class="sidebar-normal">đơn xin vắng</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                </li>
-                <li >
-                    <a asp-area="" asp-controller="ThongBao" asp-action="Index">
-                        <i class="pe-7s-science"></i>
-                        <p>Gửi thông báo</p>
+                <li>
+                    <a asp-area="" asp-controller="ThongKe" asp-action="Index">
+                        <i class="pe-7s-graph"></i>
+                        <p>Thống kê</p>
                     </a>
                 </li>
+                <li >
+                    <a class="nav-link" data-toggle="collapse" href="#formsEmail">
+                        <i class="pe-7s-science"></i>
+                        <p>
+                            Gửi email
+                            <b class="caret"></b>
+                        </p>
+                    </a>
+                    <div class="collapse " id="formsEmail">
+                        <ul class="nav">
+                            <li class="nav-item ">
+                                <a asp-area="" asp-controller="ThongBao" asp-action="Index">
+                                    <span class="sidebar-mini">Gửi</span>
+                                    <span class="sidebar-normal">thông báo</span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a asp-area="" asp-controller="ThongBao" asp-action="XinVangHoc">
+                                    <span class="sidebar-mini">Gửi</span>
+                                    <span class="sidebar-normal">đơn xin vắng</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
                 <li>
                     <a asp-area="" asp-controller="Home" asp-action="Privacy">
                         <i class="pe-7s-key"></i>
@@ -236,8 +237,8 @@
 
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                           <a href="">
-                               <p>Account</p>
+                           <a>
+                               <p>Admin</p>
                             </a>
                         </li>
                         @* <li class="dropdown">

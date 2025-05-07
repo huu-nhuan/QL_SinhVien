@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -47,6 +48,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Diemhps/Create
+        [Authorize(Policy = "GiangVienOrAdmin")]
         public IActionResult Create()
         {
             ViewBag.MaHp = new SelectList(_context.Hocphans, "MaHp", "MaHp");
@@ -57,6 +59,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: Diemhps/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "GiangVienOrAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaSv,MaHp,DiemHp")] Diemhp diem)
@@ -97,6 +100,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Diemhps/Edit/5
+        [Authorize(Policy = "GiangVienOrAdmin")]
 
         public async Task<IActionResult> Edit(string id1, string id2)
         {
@@ -118,6 +122,7 @@ namespace WebQuanLySinhVien.Controllers
         // POST: Diemhps/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "GiangVienOrAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id1, string id2, [Bind("MaSv,MaHp,DiemHp")] Diemhp diem)
@@ -151,6 +156,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // GET: Diemhps/Delete/5
+        [Authorize(Policy = "GiangVienOrAdmin")]
         public async Task<IActionResult> Delete(string id1, string id2)
         {
             if (id1 == null || id2 == null)
@@ -171,6 +177,7 @@ namespace WebQuanLySinhVien.Controllers
         }
 
         // POST: Diemhps/Delete/5
+        [Authorize(Policy = "GiangVienOrAdmin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id1, string id2)
@@ -201,10 +208,11 @@ namespace WebQuanLySinhVien.Controllers
         {
             ViewBag.MaHp = new SelectList(_context.Hocphans, "MaHp", "MaHp"); 
 
-            // Chỉ thêm phần tử chứa id vào SelectList của MaSv
+            // thêm phần tử chứa id vào SelectList của MaSv
             ViewBag.MaSv = new SelectList(new List<string> { id });
             return PartialView("_CreatePartial", new Diemhp());
         }
+        [Authorize(Policy = "GiangVienOrAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddHp([Bind("MaSv,MaHp,DiemHp")] Diemhp diem)
