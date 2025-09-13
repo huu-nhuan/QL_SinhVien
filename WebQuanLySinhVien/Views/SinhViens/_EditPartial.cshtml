@@ -1,6 +1,7 @@
 ﻿@model WebQuanLySinhVien.Models.SinhVien
 @{
     Layout = null;
+    var role = User.FindFirst("Role")?.Value;
 }
 <h4>Sinh viên</h4>
 <hr />
@@ -42,7 +43,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label asp-for="Sdt" class="control-label"></label>
-                        <input asp-for="Sdt" class="form-control" />
+                        <input asp-for="Sdt" type="number" class="form-control" />
                         <span asp-validation-for="Sdt" class="text-danger"></span>
                     </div>
                 </div>
@@ -53,15 +54,18 @@
                 <span asp-validation-for="DiaChi" class="text-danger"></span>
             </div>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label asp-for="IdTk" class="control-label"></label>
-                        <select asp-for="IdTk" class="form-control" asp-items="@(new SelectList(ViewBag.IdTk, "Value", "Text", null))">
-                            <option value="">Chưa có tài khoản</option>
-                        </select>
-                        <span asp-validation-for="IdTk" class="text-danger"></span>
+                @if (role != "2")
+                {
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label asp-for="IdTk" class="control-label"></label>
+                            <select asp-for="IdTk" class="form-control" asp-items="@(new SelectList(ViewBag.IdTk, "Value", "Text", null))">
+                                <option value="">Chưa có tài khoản</option>
+                            </select>
+                            <span asp-validation-for="IdTk" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
+                }
                 <div class="col-md-8">
                     <div class="form-group">
                         <label asp-for="Email" class="control-label"></label>

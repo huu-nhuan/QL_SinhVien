@@ -11,7 +11,7 @@ builder.Services.AddSession();
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddDbContext<QuanLySinhVienContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("QuanLySinhVienContext")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("QLSVConnection")));
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

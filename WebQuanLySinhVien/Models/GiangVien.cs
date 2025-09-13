@@ -17,6 +17,7 @@ public partial class GiangVien
     [Display(Name = "Ngày sinh")]
     public DateOnly? NgaySinh { get; set; }
     [Display(Name = "Số điện thoại")]
+    [RegularExpression(@"^\d+$", ErrorMessage = "Chỉ được nhập số.")]
     public string? Sdt { get; set; }
     [Display(Name = "Địa chỉ")]
     public string? DiaChi { get; set; }

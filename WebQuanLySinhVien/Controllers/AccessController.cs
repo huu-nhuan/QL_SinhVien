@@ -13,12 +13,14 @@ namespace WebQuanLySinhVien.Controllers
 {
     public class AccessController : Controller
     {
-        QuanLySinhVienContext db = new QuanLySinhVienContext();
+        private readonly QuanLySinhVienContext db;
+        //QuanLySinhVienContext db = new QuanLySinhVienContext();
 
         private readonly IEmailSender _emailSender;
-        public AccessController(IEmailSender emailSender)
+        public AccessController(IEmailSender emailSender, QuanLySinhVienContext context)
         {
             this._emailSender = emailSender;
+            db = context;
         }
         //Đăng nhập
         [HttpGet]

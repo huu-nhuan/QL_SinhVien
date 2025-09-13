@@ -28,6 +28,7 @@ public partial class SinhVien
     public DateOnly? NgaySinh { get; set; }
 
     [Display(Name = "Số điện thoại")]
+    [RegularExpression(@"^\d+$", ErrorMessage = "Chỉ được nhập số.")]
     [Required(ErrorMessage = "SĐT bắt buộc nhập")]
     public string Sdt { get; set; } = null!;
 

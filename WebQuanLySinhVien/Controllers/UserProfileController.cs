@@ -172,7 +172,7 @@ namespace WebQuanLySinhVien.Controllers
                     return View(user);
                 }
                 user.ImagePath = _context.Taikhoans.Where(i => i.IdTk == gv.IdTk).Select(x => x.ImagePath).FirstOrDefault();
-                ViewData["Thongbao"] = "có gì đó không đúng";
+                ViewData["Thongbao"] = "Thông tin thiếu hoặc không phù hợp!";
                 return View(user);
             }
             else
@@ -237,7 +237,7 @@ namespace WebQuanLySinhVien.Controllers
 
 
                 user.ImagePath = _context.Taikhoans.Where(i => i.IdTk == sv.IdTk).Select(x => x.ImagePath).FirstOrDefault();
-                ViewData["Thongbao"] = "có gì đó không đúng";
+                ViewData["Thongbao"] = "Thông tin thiếu hoặc không phù hợp!";
                 return View(user);
             }
         }

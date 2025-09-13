@@ -265,6 +265,14 @@ namespace WebQuanLySinhVien.Controllers
 
             try
             {
+                var hs = _context.HoSoHocTaps.Where(h => h.MaSv == sinhVien.MaSv);
+                if (hs.Any())
+                {
+                    foreach (var h in hs)
+                    {
+                        _context.Remove(h);
+                    }
+                }
                 _context.SinhViens.Remove(sinhVien);
                 await _context.SaveChangesAsync();
                 return Json(new { success = true, message = "Xóa thành công" });
