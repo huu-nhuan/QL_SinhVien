@@ -2,7 +2,6 @@
 *Hệ thống quản lý sinh viên viết bằng ASP.NET MVC + SQL Server.*
 # Chức năng chính
 
-##  Tính năng chính
 -  Đăng nhập / Đăng xuất / Quên mật khẩu
 -  Quản lý sinh viên, lớp học, môn học...
 -  Thống kê
